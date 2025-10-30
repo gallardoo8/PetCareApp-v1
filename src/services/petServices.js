@@ -390,6 +390,109 @@
             console.error('❌ DEBUG Error obteniendo todas las mascotas:', error);
             throw error;
         }
+    }, 
+    
+};
+
+// ✅ NUEVO: Servicio para eliminar mascota permanentemente
+export const petManagementService = {
+    // Eliminar mascota permanentemente
+    deletePet: async (petId) => {
+        try {
+            console.log('🗑️ Eliminando mascota permanentemente:', petId);
+            
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                throw new Error('Usuario no autenticado');
+            }
+
+            // Obtener datos de la mascota antes de eliminar
+            const petDoc = await db.collection('mascotas').doc(petId).get();
+            
+            if (!petDoc.exists) {
+                throw new Error('La mascota no existe');
+            }
+
+            const petData = petDoc.data();
+            
+            // Verificar que el usuario sea el dueño
+            if (petData.userId !== currentUser.uid) {
+                throw new Error('No tienes permiso para eliminar esta mascota');
+            }
+
+            // Eliminar datos relacionados
+            console.log('🧹 Eliminando registros relacionados...');
+            
+            // Eliminar vacunas
+            const vaccinationsSnapshot = await db.collection('vaccinations')
+                .where('petId', '==', petId)
+                .get();
+            vaccinationsSnapshot.forEach(async (doc) => {
+                await doc.ref.delete();
+            });
+
+            // Eliminar desparasitaciones
+            const dewormingsSnapshot = await db.collection('dewormings')
+                .where('petId', '==', petId)
+                .get();
+            dewormingsSnapshot.forEach(async (doc) => {
+                await doc.ref.delete();
+            });
+
+            // Eliminar exámenes anuales
+            const examsSnapshot = await db.collection('annualExams')
+                .where('petId', '==', petId)
+                .get();
+            examsSnapshot.forEach(async (doc) => {
+                await doc.ref.delete();
+            });
+
+            // Finalmente eliminar la mascota
+            await db.collection('mascotas').doc(petId).delete();
+            
+            console.log('✅ Mascota eliminada permanentemente');
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Error eliminando mascota:', error);
+            throw error;
+        }
+    },
+
+    // Actualizar información de mascota
+    updatePet: async (petId, updateData) => {
+        try {
+            console.log('✏️ Actualizando mascota:', petId);
+            console.log('📝 Datos a actualizar:', updateData);
+
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                throw new Error('Usuario no autenticado');
+            }
+
+            // Verificar que la mascota existe y el usuario es el dueño
+            const petDoc = await db.collection('mascotas').doc(petId).get();
+            
+            if (!petDoc.exists) {
+                throw new Error('La mascota no existe');
+            }
+
+            const petData = petDoc.data();
+            if (petData.userId !== currentUser.uid) {
+                throw new Error('No tienes permiso para editar esta mascota');
+            }
+
+            // Actualizar datos
+            await db.collection('mascotas').doc(petId).update({
+                ...updateData,
+                updatedAt: new Date()
+            });
+
+            console.log('✅ Mascota actualizada exitosamente');
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Error actualizando mascota:', error);
+            throw error;
+        }
     }
 };
 
