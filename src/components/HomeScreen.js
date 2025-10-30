@@ -155,27 +155,63 @@ const HomeScreen = ({ navigation }) => {
     };
 
     // Menú de opciones para cada mascota
-    const showPetOptions = (pet) => {
-        Alert.alert(
-            pet.nombre,
-            'Selecciona una opción',
-            [
-                {
-                    text: '✏️ Editar información',
-                    onPress: () => navigateToOption(pet, 'edit')
-                },
-                {
-                    text: '💔 Archivar mascota',
-                    onPress: () => handleArchivePet(pet),
-                    style: 'destructive'
-                },
-                {
-                    text: 'Cancelar',
-                    style: 'cancel'
+    // ✅ ACTUALIZADO: Menú con opción de eliminar
+const showPetOptions = (pet) => {
+    Alert.alert(
+        pet.nombre,
+        'Selecciona una opción',
+        [
+            {
+                text: '✏️ Editar información',
+                onPress: () => navigateToOption(pet, 'edit')
+            },
+            {
+                text: '📸 Cambiar foto',
+                onPress: () => handleImageSelection(pet.id)
+            },
+            {
+                text: '💔 Archivar mascota',
+                onPress: () => handleArchivePet(pet),
+                style: 'default'
+            },
+            {
+                text: '🗑️ Eliminar permanentemente',
+                onPress: () => handleDeletePet(pet),
+                style: 'destructive'
+            },
+            {
+                text: 'Cancelar',
+                style: 'cancel'
+            }
+        ]
+    );
+};
+
+// ✅ NUEVA FUNCIÓN: Eliminar mascota
+const handleDeletePet = (pet) => {
+    Alert.alert(
+        '⚠️ Eliminar Permanentemente',
+        `¿Estás seguro de que deseas eliminar a ${pet.nombre}?\n\n⚠️ ESTA ACCIÓN NO SE PUEDE DESHACER.\n\nSe eliminarán todos los registros de vacunas, desparasitaciones y exámenes.\n\n💡 Si prefieres conservar los recuerdos, usa "Archivar mascota" en su lugar.`,
+        [
+            { text: 'Cancelar', style: 'cancel' },
+            {
+                text: 'Eliminar',
+                style: 'destructive',
+                onPress: async () => {
+                    try {
+                        const { petManagementService } = require('../services/petServices');
+                        await petManagementService.deletePet(pet.id);
+                        await loadUserPets(user.uid);
+                        Alert.alert('✓ Eliminada', `${pet.nombre} ha sido eliminada permanentemente`);
+                    } catch (error) {
+                        console.error('Error eliminando mascota:', error);
+                        Alert.alert('Error', 'No se pudo eliminar la mascota: ' + error.message);
+                    }
                 }
-            ]
-        );
-    };
+            }
+        ]
+    );
+};
 
     // 🎨 Tarjeta de mascota minimalista
     const PetCard = ({ pet }) => (

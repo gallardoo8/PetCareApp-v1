@@ -23,6 +23,9 @@ const PetRegisterScreen = ({ navigation }) => {
     const [petName, setPetName] = useState('');
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [loading, setLoading] = useState(false);
+    
+    // ✅ NUEVO: Estado para el género
+    const [gender, setGender] = useState('');
 
     const speciesOptions = ['Perro', 'Gato'];
 
@@ -42,6 +45,7 @@ const PetRegisterScreen = ({ navigation }) => {
     };
 
     const handleRegister = async () => {
+        // Validaciones
         if (!petName.trim()) {
             Alert.alert('Error', 'El nombre de la mascota es requerido');
             return;
@@ -49,6 +53,12 @@ const PetRegisterScreen = ({ navigation }) => {
         
         if (!breed.trim()) {
             Alert.alert('Error', 'La raza es requerida');
+            return;
+        }
+
+        // ✅ NUEVO: Validar género
+        if (!gender) {
+            Alert.alert('Error', 'Selecciona el sexo de tu mascota');
             return;
         }
 
@@ -64,7 +74,10 @@ const PetRegisterScreen = ({ navigation }) => {
                 especie: selectedSpecies,
                 raza: breed.trim(),
                 fechaNacimiento: birthDate,
+                genero: gender, // ✅ NUEVO: Agregar género
             };
+
+            console.log('📝 Datos a registrar:', petData);
 
             await addPet(petData);
             
@@ -74,10 +87,12 @@ const PetRegisterScreen = ({ navigation }) => {
                 [{ 
                     text: 'Ver mis mascotas', 
                     onPress: () => {
+                        // Limpiar formulario
                         setPetName('');
                         setBreed('');
                         setBirthDate(new Date());
                         setSelectedSpecies('Perro');
+                        setGender(''); // ✅ NUEVO: Limpiar género
                         navigation.navigate('MainTabs', { screen: 'Home' });
                     }
                 }]
@@ -92,8 +107,6 @@ const PetRegisterScreen = ({ navigation }) => {
 
     return (
         <SafeContainer style={styles.container}>
-            {/* Header minimalista */}
-
             <ScrollView 
                 style={styles.content}
                 contentContainerStyle={styles.contentContainer}
@@ -150,6 +163,62 @@ const PetRegisterScreen = ({ navigation }) => {
                         ))}
                     </View>
                 </View>
+
+               {/* ✅ ACTUALIZADO: Selector de Género - Más compacto */}
+<View style={styles.inputContainer}>
+    <Text style={styles.label}>Sexo *</Text>
+    <View style={styles.genderContainer}>
+        <TouchableOpacity
+            style={[
+                styles.genderButton,
+                gender === 'macho' && styles.genderButtonMaleActive
+            ]}
+            onPress={() => setGender('macho')}
+        >
+            <View style={[
+                styles.genderIconCircle,
+                gender === 'macho' && styles.genderIconCircleMaleActive
+            ]}>
+                <Ionicons 
+                    name="male" 
+                    size={18} // ← Reducido de 24 a 18
+                    color={gender === 'macho' ? '#fff' : '#3498DB'}
+                />
+            </View>
+            <Text style={[
+                styles.genderText,
+                gender === 'macho' && styles.genderTextActive
+            ]}>
+                Macho
+            </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+            style={[
+                styles.genderButton,
+                gender === 'hembra' && styles.genderButtonFemaleActive
+            ]}
+            onPress={() => setGender('hembra')}
+        >
+            <View style={[
+                styles.genderIconCircle,
+                gender === 'hembra' && styles.genderIconCircleFemaleActive
+            ]}>
+                <Ionicons 
+                    name="female" 
+                    size={18} // ← Reducido de 24 a 18
+                    color={gender === 'hembra' ? '#fff' : '#E74C3C'}
+                />
+            </View>
+            <Text style={[
+                styles.genderText,
+                gender === 'hembra' && styles.genderTextActive
+            ]}>
+                Hembra
+            </Text>
+        </TouchableOpacity>
+    </View>
+</View>
 
                 {/* Raza */}
                 <View style={styles.inputContainer}>
