@@ -78,7 +78,7 @@ const PetRegisterScreen = ({ navigation }) => {
                         setBreed('');
                         setBirthDate(new Date());
                         setSelectedSpecies('Perro');
-                        navigation.navigate('Home');
+                        navigation.navigate('MainTabs', { screen: 'Home' });
                     }
                 }]
             );
