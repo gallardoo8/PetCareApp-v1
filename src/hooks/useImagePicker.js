@@ -80,6 +80,28 @@
         );
     };
 
+    ////////////////////////ACTU 4.29
+    // Para galería
+const handlePickImage = async () => {
+    try {
+        setUploadingPhoto(true);
+        const imageUri = await pickImage(); // Hook que abre la galería
+        
+        if (imageUri) {
+            // Subir a Firebase
+            const result = await uploadProfilePhoto(imageUri);
+            if (result.success) {
+                setPhotoURL(result.photoURL);
+                Alert.alert('Éxito', 'Foto actualizada');
+            }
+        }
+    } catch (error) {
+        Alert.alert('Error', 'No se pudo actualizar la foto');
+    } finally {
+        setUploadingPhoto(false);
+    }
+};
+
     return {
         loading,
         setLoading,

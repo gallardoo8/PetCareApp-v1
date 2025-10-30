@@ -146,10 +146,6 @@ const EditProfileScreen = ({ navigation }) => {
 
     // Guardar cambios
     const handleSave = async () => {
-        if (!validateForm()) {
-            return;
-        }
-
         try {
             setLoading(true);
 
@@ -158,42 +154,15 @@ const EditProfileScreen = ({ navigation }) => {
                 nombre: nombre.trim()
             };
 
-            // Solo actualizar email si cambió
-            if (email.trim() !== (userProfile?.correo || user?.email)) {
-                updates.correo = email.trim();
-            }
-
             await updateUserProfile(updates);
-            
+
             // Recargar perfil actualizado
             await loadUserProfile(user.uid);
-
-            Alert.alert(
-                t('common.success'),
-                t('editProfile.success'),
-                [
-                    {
-                        text: t('common.ok'),
-                        onPress: () => navigation.goBack()
-                    }
-                ]
-            );
+        
+            Alert.alert('Éxito', 'Perfil actualizado');
         } catch (error) {
-            console.error('Error actualizando perfil:', error);
-            
-            let errorMessage = t('editProfile.error');
-            
-            if (error.code === 'auth/requires-recent-login') {
-                errorMessage = 'Por seguridad, debes volver a iniciar sesión para cambiar tu correo';
-            } else if (error.code === 'auth/email-already-in-use') {
-                errorMessage = 'Este correo ya está en uso';
-            } else if (error.code === 'auth/invalid-email') {
-                errorMessage = 'El correo no es válido';
-            }
-
-            Alert.alert(t('common.error'), errorMessage);
-        } finally {
-            setLoading(false);
+            console.error('Error:', error);
+            Alert.alert('Error', 'No se pudo actualizar el perfil');
         }
     };
 
