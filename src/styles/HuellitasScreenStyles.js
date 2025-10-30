@@ -1,369 +1,366 @@
-    import { StyleSheet, Dimensions, Platform } from 'react-native';
-    import { SHADOW_STYLE, SAFE_AREA_PADDING, scale, verticalScale } from '../components/responsive';
-    import { COLORS, SPACING } from './theme';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
 
-    const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-    export default StyleSheet.create({
-        container: {
-            flex: 1,
-            backgroundColor: COLORS.surface,
-        },
-        centerContainer: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-        header: {
-            backgroundColor: COLORS.background,
-            padding: SPACING.md + SPACING.xs,
-            alignItems: 'center',
-            borderBottomWidth: 1,
-            borderBottomColor: '#eee',
-             // ✅ Safe area para iOS
-        ...Platform.select({
-            ios: {
-                paddingTop: 60, // Espacio para notch
-            },
-            android: {
-                paddingTop: SPACING.md + SPACING.xs,
-            },
-        }),
-        },
-        headerTitle: {
-            fontSize: scale(24),
-            fontWeight: 'bold',
-            color: COLORS.textPrimary,
-            marginTop: verticalScale(10),
-        },
-        headerSubtitle: {
-            fontSize: scale(14),
-            color: COLORS.textSecondary,
-            marginTop: verticalScale(5),
-        },
-        
-        // Tabs
-        tabContainer: {
-            flexDirection: 'row',
-            backgroundColor: '#fff',
-            borderBottomWidth: 1,
-            borderBottomColor: '#eee',
-        },
-        tab: {
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingVertical: 15,
-            gap: 8,
-        },
-        activeTab: {
-            borderBottomWidth: 2,
-            borderBottomColor: '#4ECDC4',
-        },
-        tabText: {
-            fontSize: 15,
-            color: '#999',
-            fontWeight: '500',
-        },
-        activeTabText: {
-            color: '#4ECDC4',
-            fontWeight: '600',
-        },
-        
-        content: {
-            flex: 1,
-        },
-        
-        // Tarjeta personal
-        petCard: {
-            backgroundColor: '#fff',
-            marginHorizontal: 15,
-            marginVertical: 10,
-            borderRadius: 15,
-            overflow: 'hidden',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 3,
-        },
-        petImageContainer: {
-            position: 'relative',
-            width: '100%',
-            height: 200,
-        },
-        petImage: {
-            width: '100%',
-            height: '100%',
-        },
-        placeholderImage: {
-            backgroundColor: '#ddd',
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-        imageOverlay: {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-        },
-        petInfo: {
-            padding: 15,
-        },
-        petName: {
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: '#333',
-            marginBottom: 5,
-        },
-        petDetails: {
-            fontSize: 14,
-            color: '#666',
-            marginBottom: 5,
-        },
-        archivedDate: {
-            fontSize: 13,
-            color: '#FF6B6B',
-            marginBottom: 15,
-        },
-        cardActions: {
-            flexDirection: 'row',
-            gap: 10,
-        },
-        shareButton: {
-            flex: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#E8F9F7',
-            paddingVertical: 10,
-            borderRadius: 8,
-            gap: 5,
-        },
-        shareButtonText: {
-            color: '#4ECDC4',
-            fontSize: 14,
-            fontWeight: '600',
-        },
-        restoreButton: {
-            flex: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#E8F5E9',
-            paddingVertical: 10,
-            borderRadius: 8,
-            gap: 5,
-        },
-        restoreText: {
-            color: '#4CAF50',
-            fontSize: 14,
-            fontWeight: '600',
-        },
-        
-        // Tarjetas comunitarias (estilo Instagram)
-        communityCard: {
-            backgroundColor: '#fff',
-            marginBottom: 15,
-            borderTopWidth: 1,
-            borderBottomWidth: 1,
-            borderColor: '#eee',
-        },
-        postHeader: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: 12,
-        },
-        userInfo: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 10,
-        },
-        userAvatar: {
-            width: 36,
-            height: 36,
-            borderRadius: 18,
-            backgroundColor: '#4ECDC4',
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-        userName: {
-            fontSize: 14,
-            fontWeight: '600',
-            color: '#333',
-        },
-        postTime: {
-            fontSize: 11,
-            color: '#999',
-        },
-        postImage: {
-            width: width,
-            height: width,
-        },
-        postActions: {
-            flexDirection: 'row',
-            padding: 12,
-            gap: 15,
-        },
-        actionButton: {
-            padding: 5,
-        },
-        likesCount: {
-            paddingHorizontal: 12,
-            fontSize: 14,
-            fontWeight: '600',
-            color: '#333',
-            marginBottom: 8,
-        },
-        postContent: {
-            paddingHorizontal: 12,
-            paddingBottom: 12,
-        },
-        petNameBold: {
-            fontSize: 15,
-            fontWeight: '700',
-            color: '#333',
-            marginBottom: 5,
-        },
-        petBreed: {
-            fontWeight: '400',
-            color: '#666',
-        },
-        postMessage: {
-            fontSize: 14,
-            color: '#333',
-            lineHeight: 20,
-        },
-        commentsSection: {
-            paddingHorizontal: 12,
-            paddingBottom: 12,
-        },
-        viewComments: {
-            fontSize: 13,
-            color: '#999',
-        },
-        
-        // Modal
-        modalContainer: {
-            flex: 1,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            justifyContent: 'flex-end',
-        },
-        modalContent: {
-            backgroundColor: '#fff',
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            padding: 20,
-            maxHeight: '80%',
-        },
-        modalHeader: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 20,
-        },
-        modalTitle: {
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: '#333',
-        },
-        previewSection: {
-            alignItems: 'center',
-            marginBottom: 20,
-        },
-        previewImage: {
-            width: 120,
-            height: 120,
-            borderRadius: 60,
-            marginBottom: 10,
-        },
-        previewPetName: {
-            fontSize: 18,
-            fontWeight: '600',
-            color: '#333',
-        },
-        messageInput: {
-            backgroundColor: '#f8f9fa',
-            borderRadius: 10,
-            padding: 15,
-            fontSize: 15,
-            color: '#333',
-            minHeight: 100,
-            marginBottom: 20,
-        },
-        confirmShareButton: {
-            backgroundColor: '#4ECDC4',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: 15,
-            borderRadius: 10,
-            gap: 8,
-        },
-        confirmShareText: {
-            color: '#fff',
-            fontSize: 16,
-            fontWeight: '600',
-        },
-        
-        // Empty state
-        emptyContainer: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingVertical: 60,
-            paddingHorizontal: 40,
-        },
-        emptyText: {
-            fontSize: 18,
-            fontWeight: '600',
-            color: '#666',
-            textAlign: 'center',
-            marginTop: 20,
-        },
-        emptySubtext: {
-            fontSize: 14,
-            color: '#999',
-            textAlign: 'center',
-            marginTop: 10,
-        },
-       //  estilos para botón de cámara
-    cameraButton: {
-        position: 'absolute',
-        bottom: 10,
-        right: 10,
-        backgroundColor: 'rgba(76, 205, 196, 0.9)',
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 3,
-        elevation: 5,
+export default StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fafafa',
     },
-    addPhotoText: {
-        color: '#fff',
+    
+    // ===== HEADER MINIMALISTA (sin emojis) =====
+    instagramHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingVertical: 14,
+        paddingTop: Platform.OS === 'ios' ? 50 : 14,
+        backgroundColor: '#fff',
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#dbdbdb',
+    },
+    instagramHeaderTitle: {
+        fontSize: 22,
+        fontWeight: '600',
+        color: '#262626',
+        letterSpacing: -0.5,
+    },
+    headerIcons: {
+        flexDirection: 'row',
+        gap: 16,
+    },
+    headerIconButton: {
+        padding: 4,
+    },
+
+    // ===== TABS =====
+    tabBar: {
+        flexDirection: 'row',
+        backgroundColor: '#fff',
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#dbdbdb',
+    },
+    tabButton: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        gap: 6,
+        position: 'relative',
+    },
+    activeTabButton: {
+        // Activo
+    },
+    tabButtonText: {
+        fontSize: 15,
+        fontWeight: '600',
+        color: '#8e8e8e',
+    },
+    activeTabButtonText: {
+        color: '#262626',
+    },
+    tabIndicator: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 2,
+        backgroundColor: '#262626',
+    },
+
+    // ===== SCROLL CONTENT =====
+    scrollContent: {
+        flex: 1,
+    },
+
+    // ===== TARJETA DE MASCOTA ARCHIVADA =====
+    instagramCard: {
+        backgroundColor: '#fff',
+        marginBottom: 8,
+        borderTopWidth: 0.5,
+        borderBottomWidth: 0.5,
+        borderColor: '#efefef',
+    },
+    cardHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 12,
+    },
+    petAvatarContainer: {
+        marginRight: 12,
+    },
+    petAvatar: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: '#f0f0f0',
+    },
+    petAvatarPlaceholder: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: '#4ECDC4',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    petHeaderInfo: {
+        flex: 1,
+    },
+    petCardName: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#262626',
+    },
+    petCardDetails: {
         fontSize: 12,
-        marginTop: 8,
+        color: '#8e8e8e',
+        marginTop: 2,
+    },
+    cardImageContainer: {
+        width: width,
+        height: width * 1.25,
+        backgroundColor: '#f0f0f0',
+    },
+    cardImage: {
+        width: '100%',
+        height: '100%',
+    },
+    cardImagePlaceholder: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#fafafa',
+    },
+    placeholderText: {
+        marginTop: 12,
+        fontSize: 16,
+        color: '#c7c7cc',
         fontWeight: '500',
     },
-    disabledText: {
-        color: '#ccc',
+    uploadingOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    cardActionsRow: {
+        flexDirection: 'row',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        gap: 16,
+    },
+    iconButton: {
+        padding: 4,
+    },
+    cardFooter: {
+        paddingHorizontal: 12,
+        paddingBottom: 12,
+    },
+    memorialDate: {
+        fontSize: 11,
+        color: '#8e8e8e',
+        marginBottom: 6,
+    },
+    farewellMessage: {
+        fontSize: 13,
+        color: '#262626',
+        lineHeight: 18,
     },
 
-    //  Botón de opciones en post
-    optionsButton: {
-        padding: 8,
+    // ===== POST DE COMUNIDAD =====
+    instagramPost: {
+        backgroundColor: '#fff',
+        marginBottom: 8,
+        borderTopWidth: 0.5,
+        borderBottomWidth: 0.5,
+        borderColor: '#efefef',
+    },
+    postHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 12,
+    },
+    postUserInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    postAvatar: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: '#4ECDC4',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12,
+    },
+    postUserName: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#262626',
+    },
+    postLocation: {
+        fontSize: 11,
+        color: '#8e8e8e',
+        marginTop: 2,
+    },
+    postImage: {
+        width: width,
+        height: width * 1.25,
+        backgroundColor: '#f0f0f0',
+    },
+    postActionsRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+    },
+    leftActions: {
+        flexDirection: 'row',
+        gap: 16,
+    },
+    actionButton: {
+        padding: 4,
+    },
+    likesText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#262626',
+        paddingHorizontal: 16,
+        marginBottom: 8,
+    },
+    captionContainer: {
+        paddingHorizontal: 16,
+        marginBottom: 8,
+    },
+    captionText: {
+        fontSize: 14,
+        color: '#262626',
+        lineHeight: 20,
+    },
+    captionUserName: {
+        fontWeight: '600',
+    },
+    petNameBold: {
+        fontWeight: '600',
+        color: '#FF6B6B',
+    },
+    petBreed: {
+        color: '#8e8e8e',
+    },
+    viewCommentsButton: {
+        paddingHorizontal: 16,
+        marginBottom: 8,
+    },
+    viewCommentsText: {
+        fontSize: 14,
+        color: '#8e8e8e',
+    },
+    postTime: {
+        fontSize: 10,
+        color: '#8e8e8e',
+        paddingHorizontal: 16,
+        paddingBottom: 12,
     },
 
-    // Modal de comentarios
+    // ===== BOTÓN FLOTANTE (FAB) =====
+    fab: {
+        position: 'absolute',
+        bottom: 24,
+        right: 24,
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        backgroundColor: '#4ECDC4',
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+    },
+
+    // ===== MODAL CREAR RECUERDO =====
+    createModalContainer: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    createModalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        paddingTop: Platform.OS === 'ios' ? 50 : 12,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#dbdbdb',
+        backgroundColor: '#fff',
+    },
+    cancelButton: {
+        fontSize: 16,
+        color: '#262626',
+    },
+    createModalTitle: {
+        fontSize: 17,
+        fontWeight: '600',
+        color: '#262626',
+    },
+    publishButton: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#0095f6',
+    },
+    publishButtonDisabled: {
+        color: '#b2dffc',
+    },
+    createModalContent: {
+        flex: 1,
+    },
+    imageSelector: {
+        width: '100%',
+        height: width * 1.25,
+        backgroundColor: '#fafafa',
+    },
+    selectedImage: {
+        width: '100%',
+        height: '100%',
+    },
+    imageSelectorPlaceholder: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    imageSelectorText: {
+        marginTop: 12,
+        fontSize: 16,
+        color: '#c7c7cc',
+        fontWeight: '500',
+    },
+    formContainer: {
+        padding: 16,
+        paddingBottom: 100, // ← Espacio extra para el teclado
+    },
+    inputField: {
+        borderWidth: 1,
+        borderColor: '#dbdbdb',
+        borderRadius: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        fontSize: 15,
+        color: '#262626',
+        backgroundColor: '#fafafa',
+        marginBottom: 12,
+    },
+    messageInput: {
+        height: 120,
+        paddingTop: 12,
+    },
+
+    // ===== MODAL COMENTARIOS =====
     commentsModalContainer: {
         flex: 1,
         backgroundColor: '#fff',
@@ -374,167 +371,254 @@
         alignItems: 'center',
         paddingHorizontal: 16,
         paddingVertical: 12,
+        paddingTop: Platform.OS === 'ios' ? 50 : 12,
         borderBottomWidth: 0.5,
         borderBottomColor: '#dbdbdb',
         backgroundColor: '#fff',
-        ...Platform.select({
-            ios: {
-                paddingTop: 50, // Para el notch en iOS
-            },
-            android: {
-                paddingTop: 16,
-            },
-        }),
-    },
-    backButtonFloating: {
-        padding: 8,
     },
     commentsHeaderTitle: {
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: '600',
         color: '#262626',
-        textAlign: 'center',
-        flex: 1,
     },
     commentsList: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     commentItem: {
         flexDirection: 'row',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        backgroundColor: '#fff',
+        padding: 16,
+        paddingBottom: 8,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#efefef',
     },
     commentAvatar: {
         width: 32,
         height: 32,
         borderRadius: 16,
         backgroundColor: '#4ECDC4',
-        justifyContent: 'center',
         alignItems: 'center',
+        justifyContent: 'center',
         marginRight: 12,
     },
     commentContent: {
         flex: 1,
     },
-    commentHeader: {
-        flexDirection: 'row',
-        alignItems: 'baseline',
-        marginBottom: 2,
-    },
     commentUserName: {
         fontSize: 13,
         fontWeight: '600',
         color: '#262626',
-        marginRight: 8,
+        marginBottom: 4,
     },
     commentText: {
-        fontSize: 13,
+        fontSize: 14,
         color: '#262626',
         lineHeight: 18,
-        flex: 1,
+        marginBottom: 8,
     },
+    
+    // ✅ NUEVO: Estilos para acciones de comentario (likes y responder)
     commentActions: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 8,
+        gap: 16,
+        marginTop: 4,
+    },
+    commentAction: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+    },
+    commentLikesCount: {
+        fontSize: 12,
+        color: '#8e8e8e',
+        fontWeight: '500',
+    },
+    replyButton: {
+        fontSize: 12,
+        color: '#8e8e8e',
+        fontWeight: '600',
     },
     commentTime: {
-        fontSize: 12,
+        fontSize: 11,
         color: '#8e8e8e',
-        marginRight: 16,
-    },
-    commentLikeButton: {
-        marginRight: 16,
-    },
-    commentLikeText: {
-        fontSize: 12,
-        color: '#8e8e8e',
-        fontWeight: '600',
-    },
-    commentReplyButton: {
-        marginRight: 16,
-    },
-    commentReplyText: {
-        fontSize: 12,
-        color: '#8e8e8e',
-        fontWeight: '600',
-    },
-    noCommentsContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 60,
-        paddingHorizontal: 40,
-    },
-    noCommentsText: {
-        fontSize: 22,
-        fontWeight: '600',
-        color: '#262626',
-        marginTop: 15,
-        textAlign: 'center',
-    },
-    noCommentsSubtext: {
-        fontSize: 14,
-        color: '#8e8e8e',
-        marginTop: 8,
-        textAlign: 'center',
-        lineHeight: 18,
-    },
-    
-    // Input de comentario (fijo abajo)
-    commentInputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        backgroundColor: '#fff',
-        borderTopWidth: 0.5,
-        borderTopColor: '#dbdbdb',
-        ...Platform.select({
-            ios: {
-                paddingBottom: 34, // Espacio para el indicator home en iOS
-            },
-            android: {
-                paddingBottom: 12,
-            },
-        }),
-    },
-    commentInputWrapper: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#dbdbdb',
-        borderRadius: 22,
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        marginRight: 8,
-    },
-    commentInput: {
-        flex: 1,
-        fontSize: 14,
-        color: '#262626',
-        paddingVertical: 0,
-        maxHeight: 80,
-    },
-    sendButton: {
-        paddingHorizontal: 8,
-        paddingVertical: 8,
-    },
-    sendButtonText: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: '#0095f6',
-    },
-    sendButtonDisabled: {
-        opacity: 0.3,
     },
 
-    // Para evitar que el teclado tape
-    buttonDisabled: {
-        opacity: 0.6,
+    // ✅ NUEVO: Estilos para respuestas
+    repliesContainer: {
+        marginTop: 12,
+        marginLeft: 8,
+        borderLeftWidth: 2,
+        borderLeftColor: '#efefef',
+        paddingLeft: 12,
+    },
+    replyItem: {
+        flexDirection: 'row',
+        marginBottom: 12,
+    },
+    replyAvatar: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: '#d1d1d6',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 8,
+    },
+    replyContent: {
+        flex: 1,
+    },
+    replyUserName: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#262626',
+        marginBottom: 2,
+    },
+    replyText: {
+        fontSize: 13,
+        color: '#262626',
+        lineHeight: 16,
+        marginBottom: 4,
+    },
+    replyTime: {
+        fontSize: 10,
+        color: '#8e8e8e',
+    },
+
+    noComments: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 80,
+    },
+    noCommentsText: {
+        marginTop: 12,
+        fontSize: 16,
+        color: '#8e8e8e',
+    },
+
+    // ✅ MEJORADO: Input de comentarios con barra de respuesta
+    commentInputArea: {
+        borderTopWidth: 0.5,
+        borderTopColor: '#dbdbdb',
+        backgroundColor: '#fff',
+    },
+    replyingToBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        backgroundColor: '#f8f8f8',
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#efefef',
+    },
+    replyingToText: {
+        fontSize: 13,
+        color: '#8e8e8e',
+    },
+    commentInputRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 12,
+        minHeight: 56, // ← Altura mínima para el input
+    },
+    commentInputField: {
+        flex: 1,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        fontSize: 15,
+        color: '#262626',
+        maxHeight: 100, // ← Altura máxima para multiline
+    },
+    sendCommentButton: {
+        fontSize: 15,
+        fontWeight: '600',
+        color: '#0095f6',
+        paddingHorizontal: 12,
+    },
+    sendCommentButtonDisabled: {
+        color: '#b2dffc',
+    },
+
+    // ===== MODAL COMPARTIR =====
+    shareModalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        justifyContent: 'flex-end', // ← Cambio: aparece desde abajo
+    },
+    shareModalContent: {
+        width: '100%',
+        maxHeight: '80%', // ← Máximo 80% de la pantalla
+        backgroundColor: '#fff',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        overflow: 'hidden',
+    },
+    shareModalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#dbdbdb',
+    },
+    shareModalTitle: {
+        fontSize: 17,
+        fontWeight: '600',
+        color: '#262626',
+    },
+    sharePreviewImage: {
+        width: '100%',
+        height: 200,
+        backgroundColor: '#f0f0f0',
+    },
+    shareMessageInput: {
+        padding: 16,
+        fontSize: 15,
+        color: '#262626',
+        minHeight: 120,
+        maxHeight: 200, // ← Altura máxima
+        textAlignVertical: 'top',
+    },
+    shareConfirmButton: {
+        backgroundColor: '#4ECDC4',
+        paddingVertical: 14,
+        alignItems: 'center',
+        margin: 16,
+        borderRadius: 8,
+    },
+    shareConfirmButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#fff',
+    },
+
+    // ===== ESTADOS VACÍOS =====
+    emptyState: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 80,
+        paddingHorizontal: 40,
+    },
+    emptyStateTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#262626',
+        marginTop: 16,
+        marginBottom: 8,
+    },
+    emptyStateText: {
+        fontSize: 14,
+        color: '#8e8e8e',
+        textAlign: 'center',
+        lineHeight: 20,
+    },
+
+    centerContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#fafafa',
     },
 });

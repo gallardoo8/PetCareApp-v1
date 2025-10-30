@@ -8,7 +8,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyDdjHlMlS6g7j9WvotQsT2DDIYSWFTj56U",
     authDomain: "petcareapp-89013.firebaseapp.com",
     projectId: "petcareapp-89013",
-    storageBucket: "/b/petcareapp-89013.firebasestorage.app/o",
+    storageBucket: "petcareapp-89013.appspot.com",
     messagingSenderId: "1030468166517",
     appId: "1:1030468166517:web:82baeebef1ff57e3ab293c",
     measurementId: "G-6H0MB6FBDZ"
