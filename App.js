@@ -18,6 +18,7 @@ import VaccinationScreen from './src/components/VaccinationScreen';
 import DewormingScreen from './src/components/DewormingScreen';
 import AnnualExamScreen from './src/components/AnnualExamScreen';
 import HuellitasEternasScreen from './src/components/HuellitasEternasScreen';
+import EditPetScreen from './src/components/EditPetScreen'; 
 
 // Importar pantallas de configuración
 import EditProfileScreen from './src/components/EditProfileScreen';
@@ -46,9 +47,7 @@ function AppStack() {
       <Stack.Screen name="Desparasitación" component={DewormingScreen} />
       <Stack.Screen name="Examen anual" component={AnnualExamScreen} />
       <Stack.Screen name="HuellitasEternas" component={HuellitasEternasScreen} />
-      
-      {/* ✅ NUEVO: Pantallas de configuración */}
-      {/* Por ahora las comentamos hasta que las creemos */}
+      <Stack.Screen name="EditPet" component={EditPetScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />

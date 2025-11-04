@@ -222,7 +222,113 @@
         </View>
         </PaperProvider>
     );
-    }
+  }
+
+  if (!location && !coordsFromParams) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#006d5b" />
+        <Text style={styles.text}>Cargando mapa...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <PaperProvider>
+      <View style={styles.container}>
+        <MapView
+          ref={mapRef}
+          style={StyleSheet.absoluteFillObject}
+          region={{
+            latitude: selectedVet ? selectedVet.latitude : location.latitude,
+            longitude: selectedVet ? selectedVet.longitude : location.longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          }}
+          showsUserLocation
+          showsMyLocationButton={false}
+        >
+          {vets.map((vet) => {
+            const isSelected =
+              selectedVet &&
+              selectedVet.latitude === vet.latitude &&
+              selectedVet.longitude === vet.longitude;
+
+            return (
+              <Marker
+                key={vet.id}
+                coordinate={{ latitude: vet.latitude, longitude: vet.longitude }}
+                onPress={() => setSelectedVet(vet)}
+                title={`🐾 ${vet.name}`}
+                description={vet.description}
+              >
+                <Image
+                  source={isSelected ? ping2 : ping}
+                  style={styles.markerImage}
+                  resizeMode="contain"
+                />
+              </Marker>
+            );
+          })}
+        </MapView>
+
+        <TouchableOpacity
+          style={[
+            styles.recenterButton,
+            {
+              width: buttonSize,
+              height: buttonSize,
+              borderRadius: buttonSize / 2,
+              bottom: screen.height * 0.15,
+              right: screen.width * 0.05,
+            },
+          ]}
+          onPress={recenterMap}
+        >
+          <Text style={styles.recenterText}>📍</Text>
+        </TouchableOpacity>
+
+        {selectedVet && (
+          <TouchableOpacity
+            style={styles.infoCard}
+            activeOpacity={0.9}
+            onPress={() =>
+              Linking.openURL(
+                `https://www.google.com/maps/search/?api=1&query=${selectedVet.latitude},${selectedVet.longitude}`
+              )
+            }
+          >
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setSelectedVet(null)}
+            >
+              <Text style={styles.closeText}>❌</Text>
+            </TouchableOpacity>
+
+            <View style={styles.cardHeader}>
+              <Image source={ping} style={styles.cardIcon} />
+              <Text style={styles.vetName}>{selectedVet.name}</Text>
+            </View>
+
+            <View style={styles.cardDivider} />
+
+            <Text style={styles.vetDescription}>{selectedVet.description}</Text>
+            <Text style={styles.link}>🗺️ Abrir en Google Maps</Text>
+
+            <TouchableOpacity
+              style={styles.hiddenRedirect}
+              onPress={() =>
+                Linking.openURL(
+                  `https://www.google.com/maps/search/?api=1&query=${selectedVet.latitude},${selectedVet.longitude}`
+                )
+              }
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+    </PaperProvider>
+  );
+}
 
     const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#ffffff' },
