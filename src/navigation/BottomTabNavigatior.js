@@ -34,69 +34,66 @@ export default function BottomTabNavigator() {
             iconName = focused ? 'settings' : 'settings-outline';
           }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        // Colores combinados (Doctoralia-style + primer código)
-        tabBarActiveTintColor: '#007A63',
-        tabBarInactiveTintColor: '#95A5A6',
-
-        // Estilos de la barra combinados
-        tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 1,
-          borderTopColor: '#F0F0F0',
-          height: Platform.OS === 'ios' ? 88 : 68,
-          paddingBottom: Platform.OS === 'ios' ? 24 : 12,
-          paddingTop: 12,
-          ...Platform.select({
-            ios: {
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: -2 },
-              shadowOpacity: 0.05,
-              shadowRadius: 8,
-            },
-            android: {
-              elevation: 8,
-            },
-          }),
-        },
-
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '600',
-          letterSpacing: 0.2,
-        },
-        tabBarItemStyle: {
-          paddingVertical: 4,
-        },
-        headerShown: false,
-      })}
-    >
-      <Tab.Screen
-        name="Mascotas"
-        component={HomeScreen}
-        options={{ title: 'Inicio' }}
-      />
-      <Tab.Screen
-        name="Agenda"
-        component={AgendaScreen}
-        options={{ title: 'Agenda' }}
-      />
-      <Tab.Screen
-        name="Mapa"
-        component={MapScreen}
-        options={{ title: 'Mapa' }}
-      />
-      <Tab.Screen
-        name="Emergencia"
-        component={EmergencyScreen}
-        options={{ title: 'Emergencia' }}
-      />
-      <Tab.Screen
-        name="Configuración"
-        component={SettingScreen}
-        options={{ title: 'Ajustes' }}
-      />
-    </Tab.Navigator>
-  );
-}
+                        return <Ionicons name={iconName} size={size} color={color} />;
+                    },
+                    tabBarActiveTintColor: '#4ECDC4',
+                    tabBarInactiveTintColor: '#95A5A6',
+                    headerShown: false,
+                    
+                    tabBarStyle: {
+                        backgroundColor: '#FFFFFF',
+                        borderTopWidth: 1,
+                        borderTopColor: '#F0F0F0',
+                        height: Platform.OS === 'ios' ? 88 : 68,
+                        paddingBottom: Platform.OS === 'ios' ? 24 : 12,
+                        paddingTop: 12,
+                        ...Platform.select({
+                            ios: {
+                                shadowColor: '#000',
+                                shadowOffset: { width: 0, height: -2 },
+                                shadowOpacity: 0.05,
+                                shadowRadius: 8,
+                            },
+                            android: {
+                                elevation: 8,
+                            },
+                        }),
+                    },
+                    tabBarLabelStyle: {
+                        fontSize: 12,
+                        fontWeight: '600',
+                        letterSpacing: 0.2,
+                    },
+                    tabBarItemStyle: {
+                        paddingVertical: 4,
+                    },
+                })}
+            >
+                <Tab.Screen 
+                    name="Home" 
+                    component={HomeScreen}
+                    options={{ title: 'Mascotas' }}
+                />
+                <Tab.Screen 
+                    name="Agenda" 
+                    component={AgendaScreen}
+                    options={{ title: 'Agenda' }}
+                />
+                <Tab.Screen 
+                    name="Mapa" 
+                    component={MapScreen}
+                    options={{ title: 'Mapa' }}
+                />
+                <Tab.Screen 
+                    name="Emergencia" 
+                    component={EmergencyScreen}
+                    options={{ title: 'Emergencia' }}
+                />
+                <Tab.Screen 
+                    name="Configuración" 
+                    component={SettingScreen}
+                    options={{ title: 'Ajustes' }}
+                />
+            </Tab.Navigator>
+    );
+    }
