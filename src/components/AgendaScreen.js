@@ -115,15 +115,27 @@ const AgendaScreen = () => {
         return `${year}-${month}-${day}`;
     };
 
-    const formatDate = (date) => {
-        const d = new Date(date);
+// ✅ CORREGIDO: Formatear fecha sin problemas de zona horaria
+const formatDate = (date) => {
+    // Si es un string en formato YYYY-MM-DD, parsearlo manualmente
+    if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        const [year, month, day] = date.split('-');
+        const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
         return d.toLocaleDateString('es-ES', {
             day: '2-digit',
             month: 'long',
             year: 'numeric',
         });
-    };
-
+    }
+    
+    // Si es un objeto Date, usarlo directamente
+    const d = new Date(date);
+    return d.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+    });
+};
     const formatTime = (date) => {
         const d = new Date(date);
         return d.toLocaleTimeString('es-ES', {

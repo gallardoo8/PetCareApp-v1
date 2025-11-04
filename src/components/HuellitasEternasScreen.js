@@ -21,6 +21,7 @@ import { petArchiveService } from '../services/petServices';
 import { communityService } from '../services/communityService';
 import styles from '../styles/HuellitasScreenStyles';
 import CreateMemoryModal from './CreateMemoryModal';
+import { notificationService } from '../services/notificationService';
 
 
 export default function HuellitasEternasScreen({ navigation }) {
@@ -52,6 +53,8 @@ export default function HuellitasEternasScreen({ navigation }) {
     const [newMemoryMessage, setNewMemoryMessage] = useState('');
     const [creatingMemory, setCreatingMemory] = useState(false);
 
+    const [unreadCount, setUnreadCount] = useState(0);
+
     // ✅ Referencias para scroll
     const scrollViewRef = useRef(null);
     const commentInputRef = useRef(null);
@@ -59,6 +62,8 @@ export default function HuellitasEternasScreen({ navigation }) {
     useEffect(() => {
         requestPermissions();
         loadData();
+        initializeNotifications();
+        loadUnreadCount();
     }, []);
 
     // ✅ NUEVO: Listener para el teclado
@@ -85,6 +90,34 @@ export default function HuellitasEternasScreen({ navigation }) {
         } catch (error) {
             console.error('Error solicitando permisos:', error);
         }
+    };
+
+
+     // ✅ NUEVO: Inicializar notificaciones
+    const initializeNotifications = async () => {
+        try {
+            const hasPermission = await notificationService.requestPermissions();
+            if (hasPermission) {
+                await notificationService.saveUserPushToken(user.uid);
+            }
+        } catch (error) {
+            console.error('Error inicializando notificaciones:', error);
+        }
+    };
+
+    // ✅ NUEVO: Cargar contador de notificaciones no leídas
+    const loadUnreadCount = async () => {
+        try {
+            const count = await notificationService.getUnreadCount(user.uid);
+            setUnreadCount(count);
+        } catch (error) {
+            console.error('Error cargando contador:', error);
+        }
+    };
+
+    // ✅ NUEVO: Ir a pantalla de notificaciones
+    const handleOpenNotifications = () => {
+        navigation.navigate('UserNotifications'); // Crearemos esta pantalla
     };
 
     const handleCreateMemory = () => {
@@ -823,12 +856,21 @@ const handlePublishNewMemory = async () => {
 
     return (
         <View style={styles.container}>
-            {/* ✅ Header sin emojis - Minimalista */}
             <View style={styles.instagramHeader}>
                 <Text style={styles.instagramHeaderTitle}>Huellitas Eternas</Text>
                 <View style={styles.headerIcons}>
-                    <TouchableOpacity style={styles.headerIconButton}>
+                    <TouchableOpacity 
+                        style={styles.headerIconButton}
+                        onPress={handleOpenNotifications}
+                    >
                         <Ionicons name="notifications-outline" size={26} color="#262626" />
+                        {unreadCount > 0 && (
+                            <View style={styles.notificationBadge}>
+                                <Text style={styles.notificationBadgeText}>
+                                    {unreadCount > 9 ? '9+' : unreadCount}
+                                </Text>
+                            </View>
+                        )}
                     </TouchableOpacity>
                 </View>
             </View>
