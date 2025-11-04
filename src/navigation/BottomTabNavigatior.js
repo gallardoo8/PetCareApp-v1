@@ -36,6 +36,7 @@ const Tab = createBottomTabNavigator();
                     tabBarActiveTintColor: '#4ECDC4',
                     tabBarInactiveTintColor: '#95A5A6',
                     headerShown: false,
+                    
                     tabBarStyle: {
                         backgroundColor: '#FFFFFF',
                         borderTopWidth: 1,
