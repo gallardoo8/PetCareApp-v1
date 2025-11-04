@@ -4,7 +4,7 @@
     "slug": "RegistroTest",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/LogoApp.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "plugins": [
