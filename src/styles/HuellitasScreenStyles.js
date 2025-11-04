@@ -621,4 +621,26 @@ export default StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#fafafa',
     },
+
+
+// ✅ NUEVO: Badge de notificaciones
+notificationBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: '#ed4956',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+},
+notificationBadgeText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: '700',
+    paddingHorizontal: 4,
+},
 });

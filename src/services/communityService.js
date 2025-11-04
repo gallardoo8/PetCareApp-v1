@@ -27,6 +27,18 @@ export const communityService = {
             };
 
             const docRef = await db.collection('memorialPosts').add(memorialPost);
+            // Notificar a seguidores (si tienes sistema de seguidores)
+            // Por ahora, solo crear el registro en Firestore
+            await notificationService.createNotificationRecord(
+                currentUser.uid,
+                'new_post',
+                '¡Post compartido!',
+                `Tu recuerdo de ${pet.name} ha sido compartido en Huellitas Eternas`,
+                { postId: docRef.id, petName: pet.name }
+            );
+
+            console.log('✅ Memorial compartido exitosamente con ID:', docRef.id);
+
             return { id: docRef.id, success: true };
         } catch (error) {
             console.error('Error compartiendo memorial:', error);
@@ -77,9 +89,32 @@ export const communityService = {
                     likedBy: [...likedBy, userId],
                     updatedAt: new Date()
                 });
+
+                 // ✅ NUEVO: Enviar notificación al dueño del post
+                if (postData.userId !== userId) { // No notificar si das like a tu propio post
+                    const userDoc = await db.collection('users').doc(userId).get();
+                    const userName = userDoc.data()?.nombre || 'Alguien';
+
+                    // Crear registro de notificación
+                    await notificationService.createNotificationRecord(
+                        postData.userId,
+                        'like',
+                        '❤️ Nuevo like',
+                        `A ${userName} le gustó tu publicación de ${postData.petName}`,
+                        { postId: postId, likedBy: userId, petName: postData.petName }
+                    );
+
+                    // Enviar push notification
+                    await notificationService.sendPushNotificationToUser(
+                        postData.userId,
+                        '❤️ Nuevo like',
+                        `A ${userName} le gustó tu publicación de ${postData.petName}`,
+                        { postId: postId, type: 'like' }
+                    );
+                }
             }
 
-            return { success: true, liked: !hasLiked };
+            return { success: true };
         } catch (error) {
             console.error('Error dando like:', error);
             throw error;
@@ -107,6 +142,25 @@ export const communityService = {
                 comments: updatedComments,
                 updatedAt: new Date()
             });
+// ✅ NUEVO: Enviar notificación al dueño del post
+            if (postData.userId !== userId) { // No notificar si comentas tu propio post
+                // Crear registro de notificación
+                await notificationService.createNotificationRecord(
+                    postData.userId,
+                    'comment',
+                    '💬 Nuevo comentario',
+                    `${userName} comentó en tu publicación de ${postData.petName}`,
+                    { postId: postId, commentId: newComment.id, petName: postData.petName }
+                );
+
+                // Enviar push notification
+                await notificationService.sendPushNotificationToUser(
+                    postData.userId,
+                    '💬 Nuevo comentario',
+                    `${userName}: ${commentText.substring(0, 50)}${commentText.length > 50 ? '...' : ''}`,
+                    { postId: postId, type: 'comment' }
+                );
+            }
 
             return { success: true, comment: newComment };
         } catch (error) {
@@ -114,6 +168,7 @@ export const communityService = {
             throw error;
         }
     },
+
 
     // Obtener posts de un usuario específico
     getUserPosts: async (userId) => {
@@ -239,7 +294,29 @@ shareMemorialDirect: async (petData, message, imageUri) => {
                             likedBy: likedBy.filter(id => id !== userId)
                         };
                     } else {
-                        // Agregar like
+                        // ✅ NUEVO: Notificar al dueño del comentario
+                        if (comment.userId !== userId) {
+                            const userDoc = db.collection('users').doc(userId).get();
+                            userDoc.then(doc => {
+                                const userName = doc.data()?.nombre || 'Alguien';
+                                
+                                notificationService.createNotificationRecord(
+                                    comment.userId,
+                                    'comment_like',
+                                    '❤️ Like en tu comentario',
+                                    `A ${userName} le gustó tu comentario en ${postData.petName}`,
+                                    { postId: postId, commentId: commentId }
+                                );
+
+                                notificationService.sendPushNotificationToUser(
+                                    comment.userId,
+                                    '❤️ Like en tu comentario',
+                                    `A ${userName} le gustó tu comentario`,
+                                    { postId: postId, type: 'comment_like' }
+                                );
+                            });
+                        }
+
                         return {
                             ...comment,
                             likes: (comment.likes || 0) + 1,
@@ -281,12 +358,29 @@ shareMemorialDirect: async (petData, message, imageUri) => {
             };
 
             const comments = postData.comments || [];
-            const updatedComments = comments.map(comment => {
-                if (comment.id === parentCommentId) {
-                    const replies = comment.replies || [];
+             const updatedComments = postData.comments.map(comment => {
+                if (comment.id === commentId) {
+                    // ✅ NUEVO: Notificar al dueño del comentario
+                    if (comment.userId !== userId) {
+                        notificationService.createNotificationRecord(
+                            comment.userId,
+                            'reply',
+                            '↩️ Nueva respuesta',
+                            `${userName} respondió a tu comentario`,
+                            { postId: postId, commentId: commentId, replyId: newReply.id }
+                        );
+
+                        notificationService.sendPushNotificationToUser(
+                            comment.userId,
+                            '↩️ Nueva respuesta',
+                            `${userName}: ${replyText.substring(0, 50)}${replyText.length > 50 ? '...' : ''}`,
+                            { postId: postId, type: 'reply' }
+                        );
+                    }
+
                     return {
                         ...comment,
-                        replies: [...replies, newReply]
+                        replies: [...(comment.replies || []), newReply]
                     };
                 }
                 return comment;
@@ -304,7 +398,8 @@ shareMemorialDirect: async (petData, message, imageUri) => {
         }
     },
 
-    // ✅ ACTUALIZADO: Agregar comentario con soporte para likes y respuestas
+
+    /*✅ ACTUALIZADO: Agregar comentario con soporte para likes y respuestas
     addComment: async (postId, userId, userName, commentText) => {
         try {
             const postRef = db.collection('memorialPosts').doc(postId);
@@ -334,7 +429,7 @@ shareMemorialDirect: async (petData, message, imageUri) => {
             console.error('Error agregando comentario:', error);
             throw error;
         }
-    },
+    }, */
 
     
     // Eliminar post
@@ -363,5 +458,7 @@ shareMemorialDirect: async (petData, message, imageUri) => {
             console.error('❌ Error eliminando post:', error);
             throw error;
         }
-    }
+    },
+
 };
+
