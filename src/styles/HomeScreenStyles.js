@@ -23,6 +23,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    logoImage: {
+        width: 50,
+        height: 50,
+        marginRight: 12,
+    },
     logoIcon: {
         backgroundColor: '#4ECDC4',
         borderRadius: 25,

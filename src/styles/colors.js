@@ -1,38 +1,45 @@
 // src/styles/colors.js
 export const colors = {
-  // Colores principales
+  // Colores principales - Turquesa (del logo)
   primary: '#4ECDC4',
-  primaryDark: '#3AAFA9',
-  primaryLight: '#6FE7DD',
+  primaryDark: '#3AB5AC',
+  primaryLight: '#95E1D3',
   
-  // Colores secundarios
+  // Colores secundarios - Coral/Naranja
   secondary: '#FF6B6B',
-  secondaryDark: '#EE5A52',
-  secondaryLight: '#FF8787',
+  secondaryDark: '#E85A5A',
+  secondaryLight: '#FF9999',
+  
+  // Colores de acento - Verde menta
+  accent: '#95E1D3',
+  accentDark: '#7DCFC1',
+  accentLight: '#B8EEDF',
   
   // Colores neutros
-  background: '#F8F9FA',
+  background: '#F7F9FB',
   surface: '#FFFFFF',
   card: '#FFFFFF',
   
   // Textos
   textPrimary: '#2C3E50',
-  textSecondary: '#7F8C8D',
-  textTertiary: '#BDC3C7',
+  textSecondary: '#34495E',
+  textTertiary: '#95A5A6',
+  textLight: '#ECF0F1',
   
   // Estados
-  success: '#2ECC71',
-  warning: '#F39C12',
-  error: '#E74C3C',
-  info: '#3498DB',
+  success: '#4ECDC4',
+  warning: '#FFB84D',
+  error: '#FF6B6B',
+  info: '#6EC4E8',
   
   // Overlay
-  overlay: 'rgba(0, 0, 0, 0.5)',
-  shadowColor: '#000000',
+  overlay: 'rgba(44, 62, 80, 0.5)',
+  overlayLight: 'rgba(78, 205, 196, 0.1)',
+  shadowColor: '#2C3E50',
   
   // Bordes
-  border: '#E1E8ED',
-  divider: '#ECF0F1',
+  border: '#D5E5E8',
+  divider: '#E8F4F3',
 };
 
 export const spacing = {
