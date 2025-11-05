@@ -4,7 +4,7 @@
     "slug": "RegistroTest",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/LogoApp.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "plugins": [
@@ -18,20 +18,28 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/icon.png",
+          "icon": "./assets/LogoApp.png",
           "color": "#4ECDC4",
           "defaultChannel": "default"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "PetCareApp necesita tu ubicación para encontrar veterinarias cercanas en caso de emergencia.",
+          "locationAlwaysPermission": "PetCareApp necesita tu ubicación para encontrar veterinarias cercanas.",
+          "locationWhenInUsePermission": "PetCareApp necesita tu ubicación para mostrarte veterinarias cercanas."
         }
       ]
     ],
     "notification": {
-      "icon": "./assets/icon.png",
+      "icon": "./assets/LogoApp.png",
       "color": "#4ECDC4",
       "androidMode": "default",
       "androidCollapsedTitle": "{{unread_count}} nuevas notificaciones"
     },
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/LogoApp.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -40,7 +48,12 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "remote-notification"
-        ]
+        ],
+        "NSLocationWhenInUseUsageDescription": "PetCareApp necesita tu ubicación para encontrar veterinarias cercanas",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "PetCareApp necesita tu ubicación para mostrarte veterinarias cercanas"
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyBVV7GZ1kS03wnHN5Thev1iWDgQ8YhSdB4"
       }
     },
     "android": {
@@ -53,9 +66,16 @@
         "RECEIVE_BOOT_COMPLETED",
         "VIBRATE",
         "SCHEDULE_EXACT_ALARM",
-        "USE_EXACT_ALARM"
+        "USE_EXACT_ALARM",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
       ],
-      "useNextNotificationsApi": true
+      "useNextNotificationsApi": true,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBVV7GZ1kS03wnHN5Thev1iWDgQ8YhSdB4"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
