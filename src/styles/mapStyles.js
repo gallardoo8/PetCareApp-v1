@@ -1,6 +1,8 @@
 // src/styles/mapStyles.js
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { colors, spacing, borderRadius, shadows } from './colors';
+
+const { width } = Dimensions.get('window');
 
 export const mapStyles = StyleSheet.create({
   container: {
@@ -12,25 +14,25 @@ export const mapStyles = StyleSheet.create({
     height: '100%',
   },
   
-  // Barra de búsqueda
+  // Barra de búsqueda CENTRADA
   searchContainer: {
     position: 'absolute',
-    top: 10,
-    left: spacing.md,
-    right: spacing.md,
-    flexDirection: 'row',
+    top: 50,
+    left: 0,
+    right: 0,
     alignItems: 'center',
-    gap: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
   searchBar: {
-    flex: 1,
+    width: '100%',
+    maxWidth: 400, // Ancho máximo para pantallas grandes
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.surface,
-    borderRadius: borderRadius.lg,
+    borderRadius: borderRadius.xl,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    ...shadows.medium,
+    paddingVertical: spacing.sm + 2,
+    ...shadows.large,
   },
   searchIcon: {
     marginRight: spacing.sm,
@@ -45,23 +47,29 @@ export const mapStyles = StyleSheet.create({
     padding: spacing.xs,
   },
   
-  // Botón de ubicación actual
+  // Botón de ubicación actual (SEPARADO)
+  locationButtonContainer: {
+    position: 'absolute',
+    top: 50,
+    right: spacing.md,
+  },
   locationButton: {
-    width: 48,
-    height: 48,
+    width: 50,
+    height: 50,
     borderRadius: borderRadius.full,
     backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    ...shadows.medium,
+    ...shadows.large,
   },
   
   // Filtros
   filtersContainer: {
     position: 'absolute',
-    top: 70,
-    left: spacing.md,
-    right: spacing.md,
+    top: 115,
+    left: 0,
+    right: 0,
+    paddingHorizontal: spacing.md,
   },
   filterScroll: {
     flexDirection: 'row',
@@ -89,18 +97,18 @@ export const mapStyles = StyleSheet.create({
     color: colors.surface,
   },
   
-  // Marcadores personalizados
+  // Marcadores personalizados MÁS PEQUEÑOS
   markerContainer: {
     alignItems: 'center',
   },
   markerIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: borderRadius.full,
+    width: 32, // Reducido de 40
+    height: 32, // Reducido de 40
+    borderRadius: 16,
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 3,
+    borderWidth: 2.5, // Reducido de 3
     borderColor: colors.surface,
     ...shadows.medium,
   },
@@ -108,29 +116,30 @@ export const mapStyles = StyleSheet.create({
     backgroundColor: colors.secondary,
   },
   markerLabel: {
-    marginTop: spacing.xs,
-    paddingHorizontal: spacing.sm,
+    marginTop: 4,
+    paddingHorizontal: spacing.xs,
     paddingVertical: 2,
     backgroundColor: colors.surface,
     borderRadius: borderRadius.sm,
     ...shadows.small,
   },
   markerLabelText: {
-    fontSize: 10,
+    fontSize: 9, // Reducido de 10
     fontWeight: '600',
     color: colors.textPrimary,
   },
   
-  // Card de información flotante
+  // Card de información flotante (Más abajo para que no tape el centro)
   infoCard: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 20,
     left: spacing.md,
     right: spacing.md,
     backgroundColor: colors.surface,
-    borderRadius: borderRadius.lg,
-    padding: spacing.md,
+    borderRadius: borderRadius.xl,
+    padding: spacing.lg,
     ...shadows.large,
+    maxHeight: '40%', // Máximo 40% de la pantalla
   },
   infoHeader: {
     flexDirection: 'row',
@@ -150,16 +159,18 @@ export const mapStyles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: borderRadius.sm,
     backgroundColor: colors.success,
+    marginRight: spacing.xs,
   },
   infoBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 11,
+    fontWeight: '700',
     color: colors.surface,
   },
   infoAddress: {
     fontSize: 14,
     color: colors.textSecondary,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
+    lineHeight: 20,
   },
   infoDetails: {
     flexDirection: 'row',
@@ -185,7 +196,7 @@ export const mapStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.md,
     borderRadius: borderRadius.md,
     gap: spacing.xs,
   },
@@ -197,7 +208,7 @@ export const mapStyles = StyleSheet.create({
   },
   infoButtonText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.surface,
   },
   

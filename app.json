@@ -1,12 +1,16 @@
 {
   "expo": {
     "name": "RegistroTest",
-    "slug": "RegistroTest",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/LogoApp.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "extra": {
+      "eas": {
+        "projectId": "petcareapp-89013"
+      }
+    },
     "plugins": [
       [
         "expo-image-picker",
@@ -32,12 +36,6 @@
         }
       ]
     ],
-    "notification": {
-      "icon": "./assets/LogoApp.png",
-      "color": "#4ECDC4",
-      "androidMode": "default",
-      "androidCollapsedTitle": "{{unread_count}} nuevas notificaciones"
-    },
     "splash": {
       "image": "./assets/LogoApp.png",
       "resizeMode": "contain",
@@ -58,7 +56,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/LogoApp.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
@@ -78,7 +76,7 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/LogoApp.png"
     }
   }
 }
