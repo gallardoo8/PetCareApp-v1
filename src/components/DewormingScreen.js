@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
+import ModernPicker from './ModernPicker';
 import { dewormingService } from '../services/dewormingService';
 import styles from '../styles/DewormingScreenStyles';
 
@@ -31,6 +31,7 @@ const DewormingScreen = ({ route, navigation }) => {
     const [dose, setDose] = useState('');
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showProductPicker, setShowProductPicker] = useState(false);
     const [loadingList, setLoadingList] = useState(true);
 
     // 🦠 CATÁLOGO DE PRODUCTOS ANTIPARASITARIOS
@@ -214,20 +215,28 @@ const DewormingScreen = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             {/* Header */}
-            <View style={styles.header}>
-                <View style={styles.headerContent}>
-                    <View style={styles.headerInfo}>
-                        <Text style={styles.title}>🐛 Desparasitación</Text>
-                        <Text style={styles.petName}>{petName}</Text>
-                    </View>
-                    <TouchableOpacity 
-                        style={styles.addButton}
-                        onPress={() => setShowAddForm(true)}
-                    >
-                        <Ionicons name="add" size={28} color="#FFFFFF" />
-                    </TouchableOpacity>
-                </View>
-            </View>
+           {/* Header Mejorado con Gradiente */}
+<View style={styles.header}>
+    <TouchableOpacity 
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+    >
+        <Ionicons name="arrow-back" size={24} color="#FFF" />
+    </TouchableOpacity>
+    
+    <View style={styles.headerInfo}>
+        <Text style={styles.title}>💉 Vacunación</Text>
+        <Text style={styles.petName}>{petName}</Text>
+    </View>
+    
+    <TouchableOpacity 
+        style={styles.addButton}
+        onPress={() => setShowAddForm(true)}
+    >
+        <Ionicons name="add" size={28} color="#FFFFFF" />
+    </TouchableOpacity>
+</View>
+
 
             <ScrollView style={styles.content}>
                 {/* FORMULARIO */}
@@ -287,26 +296,38 @@ const DewormingScreen = ({ route, navigation }) => {
                             </View>
                         </View>
 
-                        {/* Producto */}
                         <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Producto *</Text>
-                            <View style={styles.pickerContainer}>
-                                <Picker
-                                    selectedValue={selectedProduct}
-                                    onValueChange={setSelectedProduct}
-                                    style={styles.picker}
-                                    enabled={!!productType}
-                                >
-                                    {getAvailableProducts().map((product) => (
-                                        <Picker.Item 
-                                            key={product.value} 
-                                            label={product.label} 
-                                            value={product.value}
-                                        />
-                                    ))}
-                                </Picker>
-                            </View>
-                        </View>
+    <Text style={styles.label}>Producto *</Text>
+    <TouchableOpacity
+        style={[
+            styles.modernPickerButton,
+            !productType && styles.modernPickerButtonDisabled
+        ]}
+        onPress={() => productType && setShowProductPicker(true)}
+        disabled={!productType}
+    >
+        <Text style={[
+            styles.modernPickerText,
+            !selectedProduct && styles.modernPickerPlaceholder
+        ]}>
+            {selectedProduct 
+                ? getAvailableProducts().find(p => p.value === selectedProduct)?.label 
+                : productType ? 'Seleccionar producto...' : 'Primero selecciona el tipo...'}
+        </Text>
+        <Ionicons name="chevron-down" size={20} color="#666" />
+    </TouchableOpacity>
+</View>
+
+<ModernPicker
+    visible={showProductPicker}
+    onClose={() => setShowProductPicker(false)}
+    items={getAvailableProducts().filter(p => p.value !== '')}
+    onSelect={setSelectedProduct}
+    selectedValue={selectedProduct}
+    title={`Productos ${productType === 'interno' ? 'Internos' : 'Externos'}`}
+    searchPlaceholder="Buscar producto..."
+/>
+
 
                         {/* Fecha de Aplicación */}
                         <View style={styles.inputContainer}>

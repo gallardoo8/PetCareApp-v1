@@ -1,4 +1,5 @@
 import { db, storage, auth } from '../config/firebase';
+import { notificationService } from './notificationService';
 
 export const communityService = {
     // Compartir foto de mascota en la comunidad

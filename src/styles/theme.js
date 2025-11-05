@@ -1,49 +1,49 @@
-// Color palette
+// Color palette - Basado en el logo de PetCare
 export const COLORS = {
-  // Primary colors
-  primary: '#4a90e2',
-  primaryLight: '#6ba3f0',
-  primaryDark: '#3a7bc8',
+  // Primary colors - Turquesa
+  primary: '#4ECDC4',
+  primaryLight: '#95E1D3',
+  primaryDark: '#3AB5AC',
   
-  // Secondary colors
-  secondary: '#3db2d2',
-  secondaryLight: '#5cc0dd',
-  secondaryDark: '#2a9ab8',
+  // Secondary colors - Coral/Naranja
+  secondary: '#FF6B6B',
+  secondaryLight: '#FF9999',
+  secondaryDark: '#E85A5A',
   
   // Neutral colors
-  background: '#f5f5f5',
+  background: '#F7F9FB',
   surface: '#ffffff',
-  surfaceSecondary: '#f8f9fa',
+  surfaceSecondary: '#F0F8F7',
   
   // Text colors
-  textPrimary: '#333333',
-  textSecondary: '#666666',
-  textTertiary: '#999999',
+  textPrimary: '#2C3E50',
+  textSecondary: '#34495E',
+  textTertiary: '#95A5A6',
   textOnPrimary: '#ffffff',
   textOnSecondary: '#ffffff',
   
   // Status colors
-  success: '#4caf50',
-  warning: '#ff9800',
-  error: '#f44336',
-  info: '#2196f3',
+  success: '#4ECDC4',
+  warning: '#FFB84D',
+  error: '#FF6B6B',
+  info: '#6EC4E8',
   
   // Additional colors
-  accent: '#e91e63',
-  divider: '#e0e0e0',
-  shadow: '#000000',
+  accent: '#95E1D3',
+  divider: '#E8F4F3',
+  shadow: '#2C3E50',
   
   // Gray scale
-  gray50: '#fafafa',
-  gray100: '#f5f5f5',
-  gray200: '#eeeeee',
-  gray300: '#e0e0e0',
-  gray400: '#bdbdbd',
-  gray500: '#9e9e9e',
-  gray600: '#757575',
-  gray700: '#616161',
-  gray800: '#424242',
-  gray900: '#212121',
+  gray50: '#F7F9FB',
+  gray100: '#F0F8F7',
+  gray200: '#E8F4F3',
+  gray300: '#D5E5E8',
+  gray400: '#B8CDD0',
+  gray500: '#95A5A6',
+  gray600: '#7F8C8D',
+  gray700: '#34495E',
+  gray800: '#2C3E50',
+  gray900: '#1A252F',
 };
 
 // Spacing system

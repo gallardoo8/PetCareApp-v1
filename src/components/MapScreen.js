@@ -29,7 +29,7 @@ export default function MapScreen() {
   const [activeFilter, setActiveFilter] = useState('all');
   
   const mapRef = useRef(null);
-  const cardAnimation = useRef(new Animated.Value(-200)).current;
+  const cardAnimation = useRef(new Animated.Value(300)).current;
 
   useEffect(() => {
     getCurrentLocation();
@@ -100,23 +100,35 @@ export default function MapScreen() {
   const filterVeterinaries = () => {
     let filtered = [...veterinaries];
 
-    // Filtrar por búsqueda
-    if (searchQuery) {
-      filtered = filtered.filter((vet) =>
-        vet.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
 
     // Filtrar por tipo
-    if (activeFilter === 'emergency') {
-      filtered = filtered.filter((vet) => vet.opening_hours?.open_now);
-    } else if (activeFilter === 'near') {
-      filtered = filtered.filter((vet) => vet.distance <= 2);
-    }
+  if (activeFilter === 'emergency') {
+    // ✅ MEJORADO: Filtra veterinarias de emergencia
+    filtered = filtered.filter((vet) => {
+      // Verificar si está abierta ahora
+      const isOpenNow = vet.opening_hours?.open_now === true;
+      
+      // Verificar si es 24/7 (tiene solo 1 período que significa 24 horas)
+      const is24Hours = vet.opening_hours?.periods?.length === 1;
+      
+      // Verificar si tiene "24" o "emergency" en el nombre
+      const hasEmergencyInName = 
+        vet.name.toLowerCase().includes('24') ||
+        vet.name.toLowerCase().includes('emergency') ||
+        vet.name.toLowerCase().includes('emergencia') ||
+        vet.name.toLowerCase().includes('urgencias');
+      
+      // Incluir si cumple cualquiera de estas condiciones
+      return isOpenNow || is24Hours || hasEmergencyInName;
+    });
+  } else if (activeFilter === 'near') {
+    filtered = filtered.filter((vet) => vet.distance <= 2);
+  }
 
-    setFilteredVets(filtered);
-  };
+  setFilteredVets(filtered);
+}
 
+  // ✅ MODIFICADO: Ya NO mueve el mapa
   const handleMarkerPress = (vet) => {
     setSelectedVet(vet);
     
@@ -128,21 +140,21 @@ export default function MapScreen() {
       friction: 7,
     }).start();
 
-    // Centrar mapa en el marcador
-    if (mapRef.current) {
-      mapRef.current.animateToRegion({
-        latitude: vet.geometry.location.lat,
-        longitude: vet.geometry.location.lng,
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05,
-      });
-    }
+    // ❌ ELIMINADO: Ya no centra el mapa en el marcador
+    // if (mapRef.current) {
+    //   mapRef.current.animateToRegion({
+    //     latitude: vet.geometry.location.lat,
+    //     longitude: vet.geometry.location.lng,
+    //     latitudeDelta: 0.05,
+    //     longitudeDelta: 0.05,
+    //   });
+    // }
   };
 
   const handleCloseCard = () => {
     Animated.timing(cardAnimation, {
-      toValue: -200,
-      duration: 200,
+      toValue: 300,
+      duration: 250,
       useNativeDriver: true,
     }).start(() => setSelectedVet(null));
   };
@@ -169,7 +181,7 @@ export default function MapScreen() {
         ...userLocation,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
-      });
+      }, 1000);
     }
   };
 
@@ -182,6 +194,7 @@ export default function MapScreen() {
     );
   }
 
+  
   return (
     <View style={mapStyles.container}>
       <MapView
@@ -192,65 +205,55 @@ export default function MapScreen() {
         showsUserLocation
         showsMyLocationButton={false}
         toolbarEnabled={false}
+        loadingEnabled
+        loadingIndicatorColor={colors.primary}
       >
-        {filteredVets.map((vet) => (
-          <Marker
-            key={vet.place_id}
-            coordinate={{
-              latitude: vet.geometry.location.lat,
-              longitude: vet.geometry.location.lng,
-            }}
-            onPress={() => handleMarkerPress(vet)}
-          >
-            <View style={mapStyles.markerContainer}>
-              <View style={[
-                mapStyles.markerIcon,
-                vet.opening_hours?.open_now && mapStyles.markerIconEmergency
-              ]}>
-                <Ionicons 
-                  name="medical" 
-                  size={20} 
-                  color={colors.surface} 
-                />
-              </View>
-              {vet.distance <= 1 && (
-                <View style={mapStyles.markerLabel}>
-                  <Text style={mapStyles.markerLabelText}>
-                    {vet.distance.toFixed(1)} km
-                  </Text>
-                </View>
-              )}
-            </View>
-          </Marker>
-        ))}
+       {filteredVets.map((vet) => {
+  // Determinar si es veterinaria de emergencia
+  const isEmergency = 
+    vet.opening_hours?.open_now === true ||
+    vet.opening_hours?.periods?.length === 1 ||
+    vet.name.toLowerCase().includes('24') ||
+    vet.name.toLowerCase().includes('emergency') ||
+    vet.name.toLowerCase().includes('emergencia') ||
+    vet.name.toLowerCase().includes('urgencias');
+
+  return (
+    <Marker
+      key={vet.place_id}
+      coordinate={{
+        latitude: vet.geometry.location.lat,
+        longitude: vet.geometry.location.lng,
+      }}
+      onPress={() => handleMarkerPress(vet)}
+      tracksViewChanges={false}
+    >
+      <View style={mapStyles.markerContainer}>
+        <View style={[
+          mapStyles.markerIcon,
+          isEmergency && mapStyles.markerIconEmergency
+        ]}>
+          <Ionicons 
+            name={isEmergency ? "medical" : "paw"} 
+            size={16} 
+            color={colors.surface} 
+          />
+        </View>
+        {vet.distance <= 1 && (
+          <View style={mapStyles.markerLabel}>
+            <Text style={mapStyles.markerLabelText}>
+              {vet.distance.toFixed(1)} km
+            </Text>
+          </View>
+        )}
+      </View>
+    </Marker>
+  );
+})}
       </MapView>
 
-      {/* Barra de búsqueda */}
-      <View style={mapStyles.searchContainer}>
-        <View style={mapStyles.searchBar}>
-          <Ionicons 
-            name="search" 
-            size={20} 
-            color={colors.textSecondary} 
-            style={mapStyles.searchIcon}
-          />
-          <TextInput
-            style={mapStyles.searchInput}
-            placeholder="Buscar veterinaria..."
-            placeholderTextColor={colors.textTertiary}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery !== '' && (
-            <TouchableOpacity 
-              style={mapStyles.clearButton}
-              onPress={() => setSearchQuery('')}
-            >
-              <Ionicons name="close-circle" size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
-          )}
-        </View>
-        
+      {/* Botón de ubicación SEPARADO */}
+      <View style={mapStyles.locationButtonContainer}>
         <TouchableOpacity 
           style={mapStyles.locationButton}
           onPress={centerToUserLocation}
@@ -337,7 +340,9 @@ export default function MapScreen() {
           ]}
         >
           <View style={mapStyles.infoHeader}>
-            <Text style={mapStyles.infoTitle}>{selectedVet.name}</Text>
+            <Text style={mapStyles.infoTitle} numberOfLines={2}>
+              {selectedVet.name}
+            </Text>
             {selectedVet.opening_hours?.open_now && (
               <View style={mapStyles.infoBadge}>
                 <Text style={mapStyles.infoBadgeText}>ABIERTO</Text>
