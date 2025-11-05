@@ -94,10 +94,21 @@ export const notificationService = {
      // ✅ NUEVO: Guardar token de notificación del usuario
     async saveUserPushToken(userId) {
         try {
-            if (!Device.isDevice) return null;
+            if (!Device.isDevice) {
+                console.log('⚠️ No es un dispositivo físico, saltando token de push');
+                return null;
+            }
+
+            // Verificar si hay un projectId válido configurado
+            const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+            if (!projectId || projectId === 'your-project-id' || projectId === 'tu-project-id-aqui') {
+                console.log('⚠️ No hay projectId configurado, saltando token de push');
+                console.log('💡 Para usar push notifications, ejecuta: npx eas init');
+                return null;
+            }
 
             const token = (await Notifications.getExpoPushTokenAsync({
-                projectId: Constants.expoConfig?.extra?.eas?.projectId || 'your-project-id'
+                projectId: projectId
             })).data;
 
             // Guardar token en Firestore

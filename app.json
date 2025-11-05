@@ -5,11 +5,6 @@
     "icon": "./assets/LogoApp.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "extra": {
-      "eas": {
-        "projectId": "petcareapp-89013"
-      }
-    },
     "plugins": [
       [
         "expo-image-picker",
