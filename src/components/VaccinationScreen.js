@@ -11,9 +11,10 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
 import { vaccinationService } from '../services/vaccionationService';
 import styles from '../styles/VaccinationScreenStyles'
+import ModernPicker from './ModernPicker';
+
 
 const VaccinationScreen = ({ route, navigation }) => {
     const { petId, petName, petSpecies } = route.params;
@@ -26,6 +27,7 @@ const VaccinationScreen = ({ route, navigation }) => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showVaccinePicker, setShowVaccinePicker] = useState(false);
     const [loadingList, setLoadingList] = useState(true);
 
     // 🔥 CATÁLOGO DE VACUNAS POR ESPECIE
@@ -191,22 +193,31 @@ const VaccinationScreen = ({ route, navigation }) => {
     };
 
     return (
+
         <View style={styles.container}>
-            {/* Header */}
-            <View style={styles.header}>
-                <View style={styles.headerContent}>
-                    <View style={styles.headerInfo}>
-                        <Text style={styles.title}>💉 Vacunación</Text>
-                        <Text style={styles.petName}>{petName}</Text>
-                    </View>
-                    <TouchableOpacity 
-                        style={styles.addButton}
-                        onPress={() => setShowAddForm(true)}
-                    >
-                        <Ionicons name="add" size={28} color="#FFFFFF" />
-                    </TouchableOpacity>
-                </View>
-            </View>
+
+{/* Header Mejorado con Gradiente */}
+<View style={styles.header}>
+    <TouchableOpacity 
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+    >
+        <Ionicons name="arrow-back" size={24} color="#FFF" />
+    </TouchableOpacity>
+    
+    <View style={styles.headerInfo}>
+        <Text style={styles.title}>💉 Vacunación</Text>
+        <Text style={styles.petName}>{petName}</Text>
+    </View>
+    
+    <TouchableOpacity 
+        style={styles.addButton}
+        onPress={() => setShowAddForm(true)}
+    >
+        <Ionicons name="add" size={28} color="#FFFFFF" />
+    </TouchableOpacity>
+</View>
+
 
             <ScrollView style={styles.content}>
                 {/* FORMULARIO DE NUEVA VACUNACIÓN */}
@@ -214,30 +225,40 @@ const VaccinationScreen = ({ route, navigation }) => {
                     <View style={styles.formCard}>
                         <Text style={styles.formTitle}>Nueva Vacunación</Text>
 
-                        {/* 1️⃣ SELECTOR DE VACUNA CON VALIDACIÓN POR ESPECIE */}
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>
-                                Tipo de Vacuna *
-                                <Text style={styles.speciesIndicator}>
-                                    {' '}(Vacunas para {petSpecies})
-                                </Text>
-                            </Text>
-                            <View style={styles.pickerContainer}>
-                                <Picker
-                                    selectedValue={selectedVaccine}
-                                    onValueChange={(itemValue) => setSelectedVaccine(itemValue)}
-                                    style={styles.picker}
-                                >
-                                    {getAvailableVaccines().map((vaccine) => (
-                                        <Picker.Item 
-                                            key={vaccine.value} 
-                                            label={vaccine.label} 
-                                            value={vaccine.value}
-                                        />
-                                    ))}
-                                </Picker>
-                            </View>
-                        </View>
+{/* Selector de Vacuna Mejorado */}
+<View style={styles.inputContainer}>
+    <Text style={styles.label}>
+        Tipo de Vacuna *
+        <Text style={styles.speciesIndicator}>
+            {' '}(Vacunas para {petSpecies})
+        </Text>
+    </Text>
+    <TouchableOpacity
+        style={styles.modernPickerButton}
+        onPress={() => setShowVaccinePicker(true)}
+    >
+        <Text style={[
+            styles.modernPickerText,
+            !selectedVaccine && styles.modernPickerPlaceholder
+        ]}>
+            {selectedVaccine 
+                ? getAvailableVaccines().find(v => v.value === selectedVaccine)?.label 
+                : 'Seleccionar vacuna...'}
+        </Text>
+        <Ionicons name="chevron-down" size={20} color="#666" />
+    </TouchableOpacity>
+</View>
+
+{/* Modal del Picker */}
+<ModernPicker
+    visible={showVaccinePicker}
+    onClose={() => setShowVaccinePicker(false)}
+    items={getAvailableVaccines().filter(v => v.value !== '')}
+    onSelect={setSelectedVaccine}
+    selectedValue={selectedVaccine}
+    title={`Vacunas para ${petSpecies}`}
+    searchPlaceholder="Buscar vacuna..."
+/>
 
                         {/* 2️⃣ SELECTOR DE FECHA DE APLICACIÓN */}
                         <View style={styles.inputContainer}>

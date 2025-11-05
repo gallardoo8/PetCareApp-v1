@@ -8,44 +8,57 @@ export default StyleSheet.create({
     
     // Header elegante y moderno
     header: {
-        backgroundColor: '#FFFFFF',
-        paddingHorizontal: 20,
-        paddingTop: Platform.OS === 'ios' ? 60 : 40,
-        paddingBottom: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#F0F0F0',
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-            },
-            android: {
-                elevation: 2,
-            },
-        }),
-    },
+    background: 'linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%)', // Para web
+    backgroundColor: '#4ECDC4', // Fallback para móvil
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    ...Platform.select({
+        ios: {
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.15,
+            shadowRadius: 8,
+        },
+        android: {
+            elevation: 6,
+        },
+    }),
+},
+
+
+backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+},
+
     headerContent: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    headerInfo: {
-        flex: 1,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: '700',
-        color: '#2C3E50',
-        letterSpacing: 0.3,
-        marginBottom: 4,
-    },
-    petName: {
-        fontSize: 15,
-        color: '#7F8C8D',
-        fontWeight: '500',
-    },
+   headerInfo: {
+    flex: 1,
+    alignItems: 'center',
+},
+title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
+},
+petName: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '500',
+},
     addButton: {
         backgroundColor: '#4ECDC4',
         width: 56,
@@ -348,4 +361,28 @@ export default StyleSheet.create({
         color: '#7F8C8D',
         textAlign: 'center',
     },
+    modernPickerButton: {
+    backgroundColor: '#F8F9FA',
+    borderWidth: 1.5,
+    borderColor: '#E8EBED',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    minHeight: 52,
+},
+modernPickerButtonDisabled: {
+    opacity: 0.5,
+},
+modernPickerText: {
+    fontSize: 15,
+    color: '#2C3E50',
+    flex: 1,
+},
+modernPickerPlaceholder: {
+    color: '#999',
+},
+
 });
