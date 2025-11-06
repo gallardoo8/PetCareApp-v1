@@ -8,55 +8,88 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F7FA',
     },
     
-    // Header minimalista
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 24,
-        paddingVertical: 16,
-        backgroundColor: '#fff',
-        borderBottomWidth: 1,
-        borderBottomColor: '#F0F0F0',
-    },
-    logo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    logoImage: {
-        width: 50,
-        height: 50,
-        marginRight: 12,
-    },
-    logoIcon: {
-        backgroundColor: '#4ECDC4',
-        borderRadius: 25,
-        width: 40,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: 12,
-    },
-    logoText: {
-        fontSize: 20,
-        fontWeight: '700',
-        color: '#2C3E50',
-        letterSpacing: 0.5,
-    },
-    addPetButton: {
-        padding: 4,
-    },
+   // Header mejorado con gradiente
+headerContainer: {
+    backgroundColor: '#fff',
+    ...Platform.select({
+        ios: {
+            shadowColor: '#4ECDC4',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.15,
+            shadowRadius: 12,
+        },
+        android: {
+            elevation: 6,
+        },
+    }),
+},
+header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === 'ios' ? 20 : 20,
+    paddingBottom: 20,
+    backgroundColor: '#4ECDC4',
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+},
+logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+},
+
+logoIconWrapper: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 22,
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+},
+logoTextContainer: {
+    flexDirection: 'column',
+},
+logoText: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
+},
+logoSubtext: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.8)',
+    letterSpacing: 0.3,
+    marginTop: 2,
+},
+addPetButton: {
+    padding: 4,
+},
+addPetButtonInner: {
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+},
 
     // Contenedor de mascotas con más padding
     petsContainer: {
         flex: 1,
     },
-    petsContentContainer: {
-        paddingHorizontal: 20,
-        paddingTop: 24,
-        paddingBottom: 100,
-        alignItems: 'center', // ✅ Centra las tarjetas
-    },
+        petsContentContainer: {
+            paddingHorizontal: 20,
+            paddingTop: 24,
+            paddingBottom: Platform.OS === 'ios' ? 110 : 90, // ✅ Más espacio para el navbar
+            alignItems: 'center',
+        },
 
     // 🎨 Tarjeta de mascota minimalista y centrada
     petCard: {
@@ -117,25 +150,7 @@ const styles = StyleSheet.create({
         borderWidth: 4,
         borderColor: '#F8F9FA',
     },
-    editIcon: {
-        position: 'absolute',
-        bottom: 4,
-        right: 4,
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        padding: 8,
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.15,
-                shadowRadius: 4,
-            },
-            android: {
-                elevation: 3,
-            },
-        }),
-    },
+
     loadingOverlay: {
         position: 'absolute',
         top: 0,

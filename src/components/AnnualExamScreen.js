@@ -10,7 +10,7 @@ import {
     ActivityIndicator
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePickerModal from './DatePickerModal';
 import { annualExamService } from '../services/annualExamService';
 import styles from '../styles/AnnualExamScreenStyles';
 
@@ -254,13 +254,13 @@ const AnnualExamScreen = ({ route, navigation }) => {
                         </View>
 
                         {showDatePicker && (
-                            <DateTimePicker
-                                value={examDate}
-                                mode="date"
-                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                onChange={handleDateChange}
-                                maximumDate={new Date()}
-                            />
+                        
+                        <DatePickerModal
+                            visible={showDatePicker}
+                            onClose={() => setShowDatePicker(false)}
+                            onSelect={(date) => setExamDate(date)}
+                            selectedDate={examDate}
+                        />
                         )}
 
                         {/* Veterinario y Clínica */}

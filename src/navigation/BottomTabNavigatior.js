@@ -38,30 +38,33 @@ const Tab = createBottomTabNavigator();
                     headerShown: false,
                     tabBarStyle: {
                         backgroundColor: '#FFFFFF',
-                        borderTopWidth: 1,
-                        borderTopColor: '#F0F0F0',
-                        height: Platform.OS === 'ios' ? 88 : 68,
-                        paddingBottom: Platform.OS === 'ios' ? 24 : 12,
-                        paddingTop: 12,
+                        borderTopWidth: 0,
+                        height: Platform.OS === 'ios' ? 85 : 65,
+                        padding: 20,
+                        paddingBottom: Platform.OS === 'ios' ? 20 : 10,
+                        position: 'absolute',
                         ...Platform.select({
                             ios: {
                                 shadowColor: '#000',
-                                shadowOffset: { width: 0, height: -2 },
-                                shadowOpacity: 0.05,
-                                shadowRadius: 8,
+                                shadowOffset: { width: 0, height: -4 },
+                                shadowOpacity: 0.1,
+                                shadowRadius: 16,
                             },
                             android: {
-                                elevation: 8,
+                                elevation: 12,
+                                borderTopLeftRadius: 20,
+                                borderTopRightRadius: 20,
                             },
                         }),
                     },
                     tabBarLabelStyle: {
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: '600',
-                        letterSpacing: 0.2,
+                        letterSpacing: 0.3,
+                        marginBottom: Platform.OS === 'ios' ? 0 : 2,
                     },
                     tabBarItemStyle: {
-                        paddingVertical: 4,
+                        paddingVertical: Platform.OS === 'ios' ? 4 : 8,
                     },
                 })}
             >

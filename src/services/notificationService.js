@@ -101,9 +101,10 @@ export const notificationService = {
 
             // Verificar si hay un projectId válido configurado
             const projectId = Constants.expoConfig?.extra?.eas?.projectId;
-            if (!projectId || projectId === 'your-project-id' || projectId === 'tu-project-id-aqui') {
-                console.log('⚠️ No hay projectId configurado, saltando token de push');
-                console.log('💡 Para usar push notifications, ejecuta: npx eas init');
+            if (!projectId || projectId === 'your-project-id-here' || projectId === 'tu-project-id-aqui') {
+                console.log('⚠️ No hay projectId configurado correctamente');
+                console.log('💡 Solución: Ejecuta "npx eas init" para obtener un projectId válido');
+                console.log('💡 Luego actualiza app.json -> extra.eas.projectId con el ID generado');
                 return null;
             }
 
@@ -117,10 +118,16 @@ export const notificationService = {
                 updatedAt: new Date()
             });
 
-            console.log('✅ Token guardado:', token);
+            console.log('✅ Token guardado correctamente:', token);
             return token;
         } catch (error) {
-            console.error('❌ Error guardando token:', error);
+            // Evitar mostrar el error completo si solo es por falta de projectId
+            if (error.message && error.message.includes('projectId')) {
+                console.log('⚠️ Configuración de push notifications pendiente');
+                console.log('💡 Las notificaciones locales seguirán funcionando normalmente');
+            } else {
+                console.error('❌ Error guardando token:', error);
+            }
             return null;
         }
     },
