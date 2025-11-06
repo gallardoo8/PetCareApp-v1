@@ -11,13 +11,14 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import Modal from 'react-native-modal';
 import { useAuth } from '../context/AuthContext';
 import { agendaService } from '../services/agendaService';
 import { notificationService } from '../services/notificationService';
 import SafeContainer from './SafeContainer';
 import styles from '../styles/AgendaScreenStyles';
+import DatePickerModal from './DatePickerModal';
+import TimePickerModal from './TimePickerModal';
 
 // Configurar calendario en español
 LocaleConfig.locales['es'] = {
@@ -252,27 +253,42 @@ const formatDate = (date) => {
                 notificationId: null,
             };
 
+            // Crear el evento
             const eventId = await agendaService.createEvent(user.uid, eventData);
 
+            // Si se solicita notificación, programarla
             if (sendNotification) {
-                const notificationId = await notificationService.scheduleNotificationAtTime(
-                    `🐾 ${getEventTypeName(eventType)}`,
-                    `${eventTitle} - ${eventData.petName || 'Tu mascota'}`,
-                    finalDate,
-                    { eventId: eventId, type: eventType }
-                );
+                try {
+                    const notificationId = await notificationService.scheduleNotificationAtTime(
+                        `🐾 ${getEventTypeName(eventType)}`,
+                        `${eventTitle} - ${eventData.petName || 'Tu mascota'}`,
+                        finalDate,
+                        { eventId: eventId, type: eventType }
+                    );
 
-                if (notificationId) {
-                    await agendaService.updateEvent(eventId, { notificationId });
+                    // Actualizar el evento con el ID de notificación
+                    if (notificationId) {
+                        await agendaService.updateEvent(eventId, { notificationId });
+                    }
+                } catch (notificationError) {
+                    console.warn('⚠️ No se pudo programar la notificación:', notificationError);
+                    // No bloqueamos el guardado del evento si falla la notificación
                 }
             }
 
             Alert.alert('✅ Éxito', 'Evento creado correctamente');
             setShowAddModal(false);
+            
+            // Recargar eventos
             await loadEvents();
+            
+            // Seleccionar automáticamente la fecha del evento creado
+            const eventDateStr = formatDateToString(finalDate);
+            setSelectedDate(eventDateStr);
+            
         } catch (error) {
             console.error('Error guardando evento:', error);
-            Alert.alert('Error', 'No se pudo guardar el evento');
+            Alert.alert('Error', 'No se pudo guardar el evento. Por favor intenta de nuevo.');
         } finally {
             setSaving(false);
         }
@@ -317,17 +333,29 @@ const formatDate = (date) => {
 
     return (
         <SafeContainer style={styles.container}>
-            {/* Header */}
-            <View style={styles.header}>
-                <View>
-                    <Text style={styles.headerTitle}>Agenda</Text>
-                    <Text style={styles.headerSubtitle}>Organiza las citas de tus mascotas</Text>
-                </View>
-                <TouchableOpacity style={styles.addButton} onPress={openAddModal}>
-                    <Ionicons name="add-circle" size={32} color="#4ECDC4" />
-                </TouchableOpacity>
+            {/* Header */}{/* Header Mejorado con Diseño Elegante */}
+<View style={styles.headerContainer}>
+    <View style={styles.header}>
+        <View style={styles.headerLeft}>
+            <View style={styles.headerIconWrapper}>
+                <Ionicons name="calendar" size={24} color="#fff" />
             </View>
-
+            <View style={styles.headerTextContainer}>
+                <Text style={styles.headerTitle}>Mi Agenda</Text>
+                <Text style={styles.headerSubtitle}>Organiza las citas de tus mascotas</Text>
+            </View>
+        </View>
+        <TouchableOpacity 
+            style={styles.addButton} 
+            onPress={openAddModal}
+            activeOpacity={0.7}
+        >
+            <View style={styles.addButtonInner}>
+                <Ionicons name="add" size={24} color="#fff" />
+            </View>
+        </TouchableOpacity>
+    </View>
+</View>
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 {/* Calendario */}
                 <View style={styles.calendarContainer}>
@@ -642,53 +670,46 @@ const formatDate = (date) => {
                         </View>
 
                         {/* ✅ MEJORADO: Fecha con mejor UI */}
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>📅 Fecha *</Text>
-                            <TouchableOpacity
-                                style={styles.dateButton}
-                                onPress={() => setShowDatePicker(true)}
-                            >
-                                <Text style={styles.dateButtonText}>{formatDate(eventDate)}</Text>
-                                <Ionicons name="calendar-outline" size={22} color="#4ECDC4" />
-                            </TouchableOpacity>
-                        </View>
+                        {/* ✅ Fecha con Selector Personalizado */}
+<View style={styles.inputContainer}>
+    <Text style={styles.label}>📅 Fecha *</Text>
+    <TouchableOpacity
+        style={styles.dateButton}
+        onPress={() => setShowDatePicker(true)}
+    >
+        <Text style={styles.dateButtonText}>{formatDate(eventDate)}</Text>
+        <Ionicons name="calendar-outline" size={22} color="#4ECDC4" />
+    </TouchableOpacity>
+</View>
 
-                        {showDatePicker && (
-                            <DateTimePicker
-                                value={eventDate}
-                                mode="date"
-                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                onChange={handleDateChange}
-                                minimumDate={new Date()}
-                                textColor="#2C3E50"
-                                locale="es-ES"
-                            />
-                        )}
+{/* Modal de Fecha Personalizado */}
+<DatePickerModal
+    visible={showDatePicker}
+    onClose={() => setShowDatePicker(false)}
+    onSelect={(date) => setEventDate(date)}
+    selectedDate={eventDate}
+    minimumDate={new Date()}
+/>
+                        {/* ✅ Hora con Selector Personalizado */}
+<View style={styles.inputContainer}>
+    <Text style={styles.label}>🕐 Hora *</Text>
+    <TouchableOpacity
+        style={styles.dateButton}
+        onPress={() => setShowTimePicker(true)}
+    >
+        <Text style={styles.dateButtonText}>{formatTime(eventTime)}</Text>
+        <Ionicons name="time-outline" size={22} color="#4ECDC4" />
+    </TouchableOpacity>
+</View>
 
-                        {/* ✅ MEJORADO: Hora con mejor UI */}
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>🕐 Hora *</Text>
-                            <TouchableOpacity
-                                style={styles.dateButton}
-                                onPress={() => setShowTimePicker(true)}
-                            >
-                                <Text style={styles.dateButtonText}>{formatTime(eventTime)}</Text>
-                                <Ionicons name="time-outline" size={22} color="#4ECDC4" />
-                            </TouchableOpacity>
-                        </View>
-
-                        {showTimePicker && (
-                            <DateTimePicker
-                                value={eventTime}
-                                mode="time"
-                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                onChange={handleTimeChange}
-                                textColor="#2C3E50"
-                                locale="es-ES"
-                                is24Hour={false}
-                            />
-                        )}
-
+{/* Modal de Hora Personalizado */}
+<TimePickerModal
+    visible={showTimePicker}
+    onClose={() => setShowTimePicker(false)}
+    onSelect={(time) => setEventTime(time)}
+    selectedTime={eventTime}
+    is24Hour={false}
+/>
                         {/* Descripción */}
                         <View style={styles.inputContainer}>
                             <Text style={styles.label}>📝 Descripción (Opcional)</Text>

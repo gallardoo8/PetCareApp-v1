@@ -10,7 +10,7 @@ import {
     ActivityIndicator
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePickerModal from './DatePickerModal';
 import ModernPicker from './ModernPicker';
 import { dewormingService } from '../services/dewormingService';
 import styles from '../styles/DewormingScreenStyles';
@@ -344,12 +344,12 @@ const DewormingScreen = ({ route, navigation }) => {
                         </View>
 
                         {showDatePicker && (
-                            <DateTimePicker
-                                value={applicationDate}
-                                mode="date"
-                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                onChange={handleDateChange}
-                                maximumDate={new Date()}
+                        <DatePickerModal
+                                visible={showDatePicker}
+                                onClose={() => setShowDatePicker(false)}
+                                onSelect={(date) => setApplicationDate(date)}
+                                selectedDate={applicationDate}
+                                maximumDate={new Date()} // No permitir fechas futuras
                             />
                         )}
 

@@ -253,12 +253,6 @@ const handleDeletePet = (pet) => {
                     )}
                 </TouchableOpacity>
                 
-                <TouchableOpacity 
-                    style={styles.editIcon}
-                    onPress={() => handleImageSelection(pet.id)}
-                >
-                    <Ionicons name="pencil" size={14} color="#666" />
-                </TouchableOpacity>
             </View>
 
             {/* Información centrada */}
@@ -315,21 +309,33 @@ const handleDeletePet = (pet) => {
     return (
         <SafeContainer style={styles.container}>
             {/* Header */}
-            <View style={styles.header}>
-                <View style={styles.logo}>
-                    <View style={styles.logoIcon}>
-                        <Ionicons name="paw" size={20} color="#fff" />
-                    </View>
-                    <Text style={styles.logoText}>PetCare</Text>
-                </View>
-                
-                <TouchableOpacity 
-                    style={styles.addPetButton}
-                    onPress={() => navigation.navigate('PetRegister')}
-                >
-                    <Ionicons name="add-circle-outline" size={28} color="#4ECDC4" />
-                </TouchableOpacity>
+           {/* Header Mejorado con Gradiente y Logo */}
+<View style={styles.headerContainer}>
+    <View style={styles.header}>
+        {/* Logo con ícono */}
+        <View style={styles.logoContainer}>
+            <View style={styles.logoIconWrapper}>
+                <Ionicons name="paw" size={18} color="#fff" />
             </View>
+            <View style={styles.logoTextContainer}>
+                <Text style={styles.logoText}>PetCare</Text>
+                <Text style={styles.logoSubtext}>Tu compañero de confianza</Text>
+            </View>
+        </View>
+        
+        {/* Botón de agregar mascota */}
+        <TouchableOpacity 
+            style={styles.addPetButton}
+            onPress={() => navigation.navigate('PetRegister')}
+            activeOpacity={0.7}
+        >
+            <View style={styles.addPetButtonInner}>
+                <Ionicons name="add" size={20} color="#fff" />
+            </View>
+        </TouchableOpacity>
+    </View>
+</View>
+
 
             {/* Lista de mascotas */}
             <ScrollView 

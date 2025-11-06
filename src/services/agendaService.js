@@ -78,12 +78,17 @@ export const agendaService = {
     // Actualizar evento
     async updateEvent(eventId, updates) {
         try {
+            if (!eventId) {
+                throw new Error('ID de evento es requerido');
+            }
+
             await db.collection('eventos').doc(eventId).update({
                 ...updates,
                 updatedAt: new Date(),
             });
 
-            console.log('✅ Evento actualizado');
+            console.log('✅ Evento actualizado correctamente:', eventId);
+            return true;
         } catch (error) {
             console.error('❌ Error actualizando evento:', error);
             throw error;

@@ -1,10 +1,17 @@
 {
   "expo": {
+    "name": "PetCareApp",
+    "slug": "petcareapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/LogoApp.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "extra": {
+      "eas": {
+        "projectId": "71dc39d3-b981-4dfb-8505-1a2c3d65e5d8"
+      }
+    },
     "plugins": [
       [
         "expo-image-picker",
