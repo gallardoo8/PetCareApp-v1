@@ -14,7 +14,9 @@ import DatePickerModal from './DatePickerModal';
 import { vaccinationService } from '../services/vaccionationService';
 import styles from '../styles/VaccinationScreenStyles'
 import ModernPicker from './ModernPicker';
-
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import { db } from '../config/firebase';
 
 const VaccinationScreen = ({ route, navigation }) => {
     const { petId, petName, petSpecies } = route.params;
@@ -29,8 +31,10 @@ const VaccinationScreen = ({ route, navigation }) => {
     const [loading, setLoading] = useState(false);
     const [showVaccinePicker, setShowVaccinePicker] = useState(false);
     const [loadingList, setLoadingList] = useState(true);
+    const [petData, setPetData] = useState(null);
+    const [exportingPdf, setExportingPdf] = useState(false);
 
-    // 🔥 CATÁLOGO DE VACUNAS POR ESPECIE
+    // CATÁLOGO DE VACUNAS POR ESPECIE
     const vaccinesBySpecies = {
         'Perro': [
             { label: 'Seleccionar vacuna...', value: '' },
@@ -55,12 +59,13 @@ const VaccinationScreen = ({ route, navigation }) => {
         ]
     };
 
-    // Cargar vacunaciones al montar el componente
+    // Cargar vacunaciones y datos de mascota al montar el componente
     useEffect(() => {
         loadVaccinations();
+        loadPetData();
     }, []);
 
-    // 📋 FUNCIÓN: Cargar vacunaciones desde Firebase
+    // FUNCIÓN: Cargar vacunaciones desde Firebase
     const loadVaccinations = async () => {
         try {
             setLoadingList(true);
@@ -74,13 +79,25 @@ const VaccinationScreen = ({ route, navigation }) => {
         }
     };
 
-    // ✅ VALIDACIÓN: Obtener vacunas disponibles según la especie
+    // FUNCIÓN: Cargar información de la mascota
+    const loadPetData = async () => {
+        try {
+            const petDoc = await db.collection('mascotas').doc(petId).get();
+            if (petDoc.exists) {
+                setPetData(petDoc.data());
+            }
+        } catch (error) {
+            console.error('Error cargando datos de la mascota:', error);
+        }
+    };
+
+    // VALIDACIÓN: Obtener vacunas disponibles según la especie
     const getAvailableVaccines = () => {
         // Si la especie no existe en el catálogo, usar Perro por defecto
         return vaccinesBySpecies[petSpecies] || vaccinesBySpecies['Perro'];
     };
 
-    // 📅 FUNCIÓN: Manejar cambio de fecha
+    // FUNCIÓN: Manejar cambio de fecha
     const handleDateChange = (event, selectedDate) => {
         setShowDatePicker(Platform.OS === 'ios');
         if (selectedDate) {
@@ -88,7 +105,7 @@ const VaccinationScreen = ({ route, navigation }) => {
         }
     };
 
-    // 📅 FUNCIÓN: Formatear fecha
+    // FUNCIÓN: Formatear fecha
     const formatDate = (date) => {
         const dateObj = date?.seconds 
             ? new Date(date.seconds * 1000) 
@@ -101,7 +118,7 @@ const VaccinationScreen = ({ route, navigation }) => {
         });
     };
 
-    // ✅ VALIDACIÓN: Validar formulario antes de guardar
+    // VALIDACIÓN: Validar formulario antes de guardar
     const validateForm = () => {
         if (!selectedVaccine) {
             Alert.alert('Error', 'Por favor selecciona una vacuna');
@@ -119,7 +136,7 @@ const VaccinationScreen = ({ route, navigation }) => {
         return true;
     };
 
-    // 💾 FUNCIÓN: Guardar vacunación en Firebase
+    // FUNCIÓN: Guardar vacunación en Firebase
     const handleSaveVaccination = async () => {
         if (!validateForm()) return;
 
@@ -151,16 +168,16 @@ const VaccinationScreen = ({ route, navigation }) => {
             setDescription('');
             setShowAddForm(false);
 
-            Alert.alert('✅ Éxito', 'Vacuna registrada correctamente');
+            Alert.alert('Éxito', 'Vacuna registrada correctamente');
         } catch (error) {
             console.error('Error al guardar vacuna:', error);
-            Alert.alert('❌ Error', 'No se pudo guardar la vacuna');
+            Alert.alert('Error', 'No se pudo guardar la vacuna');
         } finally {
             setLoading(false);
         }
     };
 
-    // 🗑️ FUNCIÓN: Eliminar vacunación
+    // FUNCIÓN: Eliminar vacunación
     const handleDeleteVaccination = (vaccinationId) => {
         Alert.alert(
             'Eliminar Vacuna',
@@ -174,7 +191,7 @@ const VaccinationScreen = ({ route, navigation }) => {
                         try {
                             await vaccinationService.deleteVaccination(petId, vaccinationId);
                             await loadVaccinations();
-                            Alert.alert('✅', 'Vacuna eliminada');
+                            Alert.alert('Éxito', 'Vacuna eliminada');
                         } catch (error) {
                             Alert.alert('Error', 'No se pudo eliminar la vacuna');
                         }
@@ -184,7 +201,7 @@ const VaccinationScreen = ({ route, navigation }) => {
         );
     };
 
-    // ❌ FUNCIÓN: Cancelar formulario
+    // FUNCIÓN: Cancelar formulario
     const handleCancel = () => {
         setSelectedVaccine('');
         setApplicationDate(new Date());
@@ -192,31 +209,305 @@ const VaccinationScreen = ({ route, navigation }) => {
         setShowAddForm(false);
     };
 
+    // FUNCIÓN: Generar HTML para el PDF estilo cartilla
+    const generateVaccinationCardHTML = () => {
+        const currentDate = new Date().toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        // Calcular edad de la mascota
+        const calculateAge = (birthDate) => {
+            if (!birthDate) return 'N/A';
+            const birth = birthDate.seconds ? new Date(birthDate.seconds * 1000) : new Date(birthDate);
+            const today = new Date();
+            const years = today.getFullYear() - birth.getFullYear();
+            const months = today.getMonth() - birth.getMonth();
+            
+            if (years > 0) {
+                return `${years} año${years > 1 ? 's' : ''}`;
+            } else {
+                return `${months} mes${months !== 1 ? 'es' : ''}`;
+            }
+        };
+
+        const vaccineRows = vaccinations.map((vacc, index) => `
+            <tr style="${index % 2 === 0 ? 'background-color: #F8F9FA;' : ''}">
+                <td style="padding: 12px; border: 1px solid #E8EBED; text-align: center;">${index + 1}</td>
+                <td style="padding: 12px; border: 1px solid #E8EBED; font-weight: 600; color: #2C3E50;">${vacc.vaccineName}</td>
+                <td style="padding: 12px; border: 1px solid #E8EBED; text-align: center;">${formatDate(vacc.applicationDate)}</td>
+                <td style="padding: 12px; border: 1px solid #E8EBED; font-size: 12px; color: #7F8C8D;">${vacc.description || '-'}</td>
+            </tr>
+        `).join('');
+
+        return `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                    }
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                        padding: 40px;
+                        background-color: #FFFFFF;
+                        color: #2C3E50;
+                    }
+                    .header {
+                        background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+                        padding: 30px;
+                        border-radius: 16px;
+                        margin-bottom: 30px;
+                        text-align: center;
+                        color: white;
+                    }
+                    .header h1 {
+                        font-size: 32px;
+                        font-weight: 700;
+                        margin-bottom: 8px;
+                    }
+                    .header p {
+                        font-size: 16px;
+                        opacity: 0.95;
+                    }
+                    .pet-info {
+                        background-color: #F5F7FA;
+                        border-radius: 12px;
+                        padding: 24px;
+                        margin-bottom: 30px;
+                        border-left: 4px solid #4ECDC4;
+                    }
+                    .pet-info h2 {
+                        color: #2C3E50;
+                        font-size: 22px;
+                        margin-bottom: 16px;
+                        font-weight: 700;
+                    }
+                    .info-grid {
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 16px;
+                    }
+                    .info-item {
+                        padding: 12px;
+                        background-color: white;
+                        border-radius: 8px;
+                        border: 1px solid #E8EBED;
+                    }
+                    .info-label {
+                        font-size: 12px;
+                        color: #7F8C8D;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        margin-bottom: 4px;
+                    }
+                    .info-value {
+                        font-size: 16px;
+                        color: #2C3E50;
+                        font-weight: 600;
+                    }
+                    .vaccines-section h2 {
+                        color: #2C3E50;
+                        font-size: 22px;
+                        margin-bottom: 20px;
+                        font-weight: 700;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        background-color: white;
+                        border-radius: 12px;
+                        overflow: hidden;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                    }
+                    thead {
+                        background-color: #4ECDC4;
+                        color: white;
+                    }
+                    th {
+                        padding: 16px 12px;
+                        text-align: left;
+                        font-weight: 700;
+                        font-size: 14px;
+                        letter-spacing: 0.3px;
+                    }
+                    td {
+                        padding: 12px;
+                        border: 1px solid #E8EBED;
+                        font-size: 14px;
+                    }
+                    .footer {
+                        margin-top: 40px;
+                        text-align: center;
+                        color: #7F8C8D;
+                        font-size: 12px;
+                        padding-top: 20px;
+                        border-top: 2px solid #E8EBED;
+                    }
+                    .empty-state {
+                        text-align: center;
+                        padding: 40px;
+                        color: #7F8C8D;
+                        font-style: italic;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1> Cartilla de Vacunación</h1>
+                    <p>Registro médico veterinario</p>
+                </div>
+
+                <div class="pet-info">
+                    <h2> Información de la Mascota</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Nombre</div>
+                            <div class="info-value">${petData?.nombre || petName}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Especie</div>
+                            <div class="info-value">${petData?.especie || petSpecies}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Raza</div>
+                            <div class="info-value">${petData?.raza || 'No especificada'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Edad</div>
+                            <div class="info-value">${petData?.fechaNacimiento ? calculateAge(petData.fechaNacimiento) : 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Peso</div>
+                            <div class="info-value">${petData?.peso ? petData.peso + ' kg' : 'No especificado'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Sexo</div>
+                            <div class="info-value">${petData?.sexo || 'No especificado'}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vaccines-section">
+                    <h2> Historial de Vacunación</h2>
+                    ${vaccinations.length > 0 ? `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; width: 60px;">#</th>
+                                    <th>Vacuna</th>
+                                    <th style="text-align: center; width: 140px;">Fecha Aplicación</th>
+                                    <th style="width: 35%;">Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${vaccineRows}
+                            </tbody>
+                        </table>
+                    ` : `
+                        <div class="empty-state">
+                            <p>No hay vacunas registradas para esta mascota.</p>
+                        </div>
+                    `}
+                </div>
+
+                <div class="footer">
+                    <p>Documento generado el ${currentDate}</p>
+                    <p style="margin-top: 8px; font-weight: 600; color: #4ECDC4;">PetCare App - Cuidado integral de tu mascota</p>
+                </div>
+            </body>
+            </html>
+        `;
+    };
+
+    // FUNCIÓN: Exportar PDF
+    const handleExportPDF = async () => {
+        if (exportingPdf) return;
+        
+        try {
+            setExportingPdf(true);
+
+            // Generar HTML
+            const htmlContent = generateVaccinationCardHTML();
+
+            // Generar PDF con expo-print
+            const { uri } = await Print.printToFileAsync({
+                html: htmlContent,
+                base64: false,
+            });
+            
+            console.log(' PDF generado:', uri);
+
+            // Compartir el PDF usando expo-sharing
+            const canShare = await Sharing.isAvailableAsync();
+            if (canShare) {
+                await Sharing.shareAsync(uri, {
+                    mimeType: 'application/pdf',
+                    dialogTitle: `Cartilla de Vacunación - ${petName}`,
+                    UTI: 'com.adobe.pdf',
+                });
+            } else {
+                Alert.alert(
+                    ' PDF Generado',
+                    `La cartilla de vacunación de ${petName} se ha generado en: ${uri}`,
+                    [{ text: 'OK' }]
+                );
+            }
+        } catch (error) {
+            console.error('Error generando PDF:', error);
+            Alert.alert(
+                ' Error',
+                'No se pudo generar el PDF. Por favor intenta de nuevo.',
+                [{ text: 'OK' }]
+            );
+        } finally {
+            setExportingPdf(false);
+        }
+    };
+
     return (
-
         <View style={styles.container}>
-
-{/* Header Mejorado con Gradiente */}
-<View style={styles.header}>
-    <TouchableOpacity 
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-    >
-        <Ionicons name="arrow-back" size={24} color="#FFF" />
-    </TouchableOpacity>
-    
-    <View style={styles.headerInfo}>
-        <Text style={styles.title}>💉 Vacunación</Text>
-        <Text style={styles.petName}>{petName}</Text>
-    </View>
-    
-    <TouchableOpacity 
-        style={styles.addButton}
-        onPress={() => setShowAddForm(true)}
-    >
-        <Ionicons name="add" size={28} color="#FFFFFF" />
-    </TouchableOpacity>
-</View>
+            {/* Header Mejorado con Gradiente */}
+            <View style={styles.header}>
+                <TouchableOpacity 
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Ionicons name="arrow-back" size={24} color="#FFF" />
+                </TouchableOpacity>
+                
+                <View style={styles.headerInfo}>
+                    <Text style={styles.title}>💉 Vacunación</Text>
+                    <Text style={styles.petName}>{petName}</Text>
+                </View>
+                
+                <View style={styles.headerButtonsContainer}>
+                    <TouchableOpacity 
+                        style={[styles.addButton, { marginRight: 8 }]}
+                        onPress={handleExportPDF}
+                        disabled={exportingPdf}
+                    >
+                        {exportingPdf ? (
+                            <ActivityIndicator size="small" color="#FFFFFF" />
+                        ) : (
+                            <Ionicons name="document-text-outline" size={24} color="#FFFFFF" />
+                        )}
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity 
+                        style={styles.addButton}
+                        onPress={() => setShowAddForm(true)}
+                    >
+                        <Ionicons name="add" size={28} color="#FFFFFF" />
+                    </TouchableOpacity>
+                </View>
+            </View>
 
 
             <ScrollView style={styles.content}>

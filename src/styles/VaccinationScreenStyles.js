@@ -59,6 +59,10 @@ petName: {
     color: 'rgba(255, 255, 255, 0.9)',
     fontWeight: '500',
 },
+headerButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+},
 addButton: {
     width: 40,
     height: 40,
